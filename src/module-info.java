@@ -1,6 +1,6 @@
 module core {
 	requires javafx.controls;
 	requires javafx.fxml;
-	opens core to javafx.fxml;
-	exports core;
+	opens ui to javafx.fxml;
+	exports ui;
 }	
