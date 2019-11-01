@@ -37,13 +37,11 @@ public class Main extends Application {
 		stage.show();
 	}
 
-	static Client client;
+	static client.Application app; 
 	public static void main(String[] args) {
 		
 		try {
-			client = new Client();
-			Thread t = new Thread(client);
-			t.start();
+			app = new client.Application();
 			launch(args);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -63,20 +61,7 @@ public class Main extends Application {
 		String password = password_field.getText();
 		String username = username_field.getText();
 		System.out.println(password + "  " + username);
-		Login_Request req = new Login_Request(username, password);
-
-		if (client == null) {
-			System.out.println("Client is null????");
-		} else {
-			client.setOutput(req);
-		}
-
-//		Stage stage = (Stage)password_field.getScene().getWindow();
-//		stage.close();
-//		Stage window = new Stage();
-//		UserMenu userMenu = new UserMenu();
-//		userMenu.start(window);
-
+		app.login((Stage)password_field.getScene().getWindow(),username, password);
 	}
 
 }
