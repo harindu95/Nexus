@@ -61,7 +61,11 @@ public class Main extends Application {
 		String password = password_field.getText();
 		String username = username_field.getText();
 		System.out.println(password + "  " + username);
-		app.login((Stage)password_field.getScene().getWindow(),username, password);
+		Stage login = (Stage)password_field.getScene().getWindow();
+		
+		app.login(username, password);
+//		login.close();
+		login.setOpacity(0);
 	}
 
 }

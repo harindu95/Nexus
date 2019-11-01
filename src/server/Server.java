@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
@@ -58,9 +59,12 @@ public class Server extends Thread {
 					}
 				} catch (SocketTimeoutException e) {
 
+
 				} catch (IOException e) {
+
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					break;
 				}
 
 			} else {

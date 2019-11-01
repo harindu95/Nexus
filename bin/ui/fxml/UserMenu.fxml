@@ -30,7 +30,7 @@
                         <Insets bottom="10.0" top="10.0" />
                      </padding>
                   </Label>
-                  <Label alignment="TOP_RIGHT" text="retrieve Username" textAlignment="RIGHT" textFill="WHITE">
+                  <Label fx:id="username_label" alignment="TOP_RIGHT" text="retrieve Username" textAlignment="RIGHT" textFill="WHITE">
                      <font>
                         <Font name="Arial Black" size="21.0" />
                      </font>
