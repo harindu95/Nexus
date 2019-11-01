@@ -14,6 +14,7 @@ import ui.UserMenu;
 public class Application {
 	Client c;
 	User u;
+	Stage loginStage;
 
 	public Application() throws UnknownHostException, IOException {
 		c = new Client(this);
@@ -47,13 +48,17 @@ public class Application {
 			@Override
 			public void run() {
 				// javaFX operations should go here
-//	        	login.close();
+	        	loginStage.close();
 				Stage window = new Stage();
 				UserMenu userMenu = new UserMenu();
 				userMenu.start(window, username);
 			}
 		});
 		
+	}
+	
+	public void setLoginStage(Stage login) {
+		this.loginStage = login;
 	}
 
 }

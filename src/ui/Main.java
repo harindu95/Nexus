@@ -16,39 +16,33 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-	
+	client.Application app;
 
-	@Override
-	public void init() {
-
+	public void initialize(client.Application app) {
+		 this.app = app; 
 	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
 
-//		
+		
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("fxml/Login.fxml"));
 		Parent root = loader.load();
-
 		Scene scene = new Scene(root);
+		client.Application app = new client.Application();
+		app.setLoginStage(stage);
+		Main controller = loader.<Main>getController();
+		
+		controller.initialize(app);
 		stage.setScene(scene);
 		stage.setResizable(false);
 		stage.show();
 	}
 
-	static client.Application app; 
+	
 	public static void main(String[] args) {
-		
-		try {
-			app = new client.Application();
-			launch(args);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
+		launch(args);
 	}
 
 	@FXML
@@ -64,8 +58,7 @@ public class Main extends Application {
 		Stage login = (Stage)password_field.getScene().getWindow();
 		
 		app.login(username, password);
-//		login.close();
-		login.setOpacity(0);
+
 	}
 
 }

@@ -24,11 +24,11 @@
          <font>
             <Font name="Arial Bold" size="23.0" />
          </font></Label>
-      <PasswordField fx:id="password_field" layoutX="232.0" layoutY="228.0">
+      <PasswordField fx:id="password_field" layoutX="232.0" layoutY="228.0" text="password">
          <font>
             <Font name="Calibri" size="14.0" />
          </font></PasswordField>
-      <TextField fx:id="username_field" layoutX="232.0" layoutY="176.0">
+      <TextField fx:id="username_field" layoutX="232.0" layoutY="176.0" text="user1234">
          <font>
             <Font name="Calibri" size="14.0" />
          </font></TextField>
