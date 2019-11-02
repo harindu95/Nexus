@@ -8,83 +8,51 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import core.Login_Request;
 import core.Message;
 
-public class Server extends Thread {
-
-	InputStream is;
-	OutputStream os;
-	Message output = null;
-	Application app;
-
+public class Server {
+	
+	ExecutorService pool;
+	ServerSocket serverSocket;
+	
 	public static void main(String[] args) {
+		Server s = null;
 		try {
-			Server s = new Server();
-			s.run();
+			s =  new Server();
+			while(true) {
+				s.listen();
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally {
+			try {
+				s.serverSocket.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
 	public Server() throws UnknownHostException, IOException {
 		// Initialize a server socket
-		ServerSocket serverSocket = new ServerSocket(3000);
+		pool = Executors.newCachedThreadPool();
+		serverSocket = new ServerSocket(3000);
 		System.out.println("Waiting for a client ");
+		
+
+	}
+
+	public void listen() throws IOException {
 		Socket socket = serverSocket.accept();
-		socket.setSoTimeout(50);
-		is = socket.getInputStream();
-		os = socket.getOutputStream();
-		System.out.println("Connection established");
-		app = new Application(this);
-
+		Connection con = new Connection(socket);
+		pool.execute(con);
+		
 	}
-
-	public void run() {
-
-		while (true) {
-			if (output == null) {
-				byte[] header = new byte[2];
-				try {
-					is.read(header);
-					int size = header[0];
-					Message.Type type = Message.Type.values()[header[1]];
-					System.out.println("Reading message");
-					if (type == Message.Type.LOGIN_REQUEST) {
-						Login_Request req = Login_Request.read(is);
-						System.out.println("Username : " + req.getUserName());
-						app.handle(req);
-					}
-				} catch (SocketTimeoutException e) {
-
-
-				} catch (IOException e) {
-
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					break;
-				}
-
-			} else {
-				synchronized (output) {
-					writeMessage(output);
-				}
-			}
-		}
-
-	}
-
-	void writeMessage(Message msg) {
-
-		try {
-			msg.write(os);
-			System.out.println("Message sent");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
-		}
-	}
+	
 }
