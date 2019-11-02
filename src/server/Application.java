@@ -11,11 +11,11 @@ public class Application {
 	
 	List<User> currentUsers;
 	UserDatabase users;
-	Server s;
+	Connection con;
 	
-	Application(Server server){
+	Application(Connection con){
 		users = new UserDatabase();
-		s = server;
+		this.con = con;
 	}
 	
 	public void handle(Message msg) {
@@ -24,7 +24,7 @@ public class Application {
 			User u = users.validate(req);
 			System.out.println("Validating User");
 			Login_Reply reply = new Login_Reply(u);
-			s.writeMessage(reply);
+			con.writeMessage(reply);
 		}
 	}
 	

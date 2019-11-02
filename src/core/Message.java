@@ -6,6 +6,7 @@ import java.io.OutputStream;
 
 public interface Message {
 	enum Type {
+		EMPTY,
 		LOGIN_REQUEST,
 		LOGIN_REPLY,
 	}
