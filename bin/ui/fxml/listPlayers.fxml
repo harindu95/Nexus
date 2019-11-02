@@ -40,9 +40,9 @@
             <Insets right="10.0" />
          </padding>
       </ButtonBar>
-      <ScrollPane layoutX="42.0" layoutY="95.0">
+      <ScrollPane layoutX="35.0" layoutY="99.0">
          <content>
-            <ListView fixedCellSize="1.0" prefHeight="374.0" prefWidth="439.0" style="-fx-background-color: #0396#85bcaca0;" />
+            <ListView fx:id="onlinelist" onMouseClicked="#handleMouseClick" prefHeight="365.0" prefWidth="439.0" />
          </content>
       </ScrollPane>
    </children>

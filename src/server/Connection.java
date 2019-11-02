@@ -8,6 +8,7 @@ import java.net.SocketTimeoutException;
 
 import core.Login_Request;
 import core.Message;
+import core.OnlineUsers_Request;
 
 public class Connection extends Thread {
 
@@ -43,6 +44,10 @@ public class Connection extends Thread {
 					if (type == Message.Type.LOGIN_REQUEST) {
 						Login_Request req = Login_Request.read(is);
 						System.out.println("Username : " + req.getUserName());
+						app.handle(req);
+					}else if(type == Message.Type.ONLINEUSERS_REQUEST) {
+						OnlineUsers_Request req = new OnlineUsers_Request();
+						System.out.println("Reading ONLINEUSERS_REQUEST");
 						app.handle(req);
 					}
 				} catch (SocketTimeoutException e) {

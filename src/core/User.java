@@ -36,6 +36,10 @@ public class User {
 		totalGames = total;
 		wins = win;
 	}
+	
+	public User(String u) {
+		username = u;
+	}
 
 	public String getPassword() {
 		return password;
