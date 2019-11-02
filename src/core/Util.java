@@ -11,4 +11,10 @@ public class Util {
 			}
 		}
 	}
+	
+	static byte[] strByteArray(String source, int length) {
+		byte[] dest = new byte[length];
+		strncpy(dest,source);
+		return dest;
+	}
 }

@@ -7,8 +7,8 @@ import java.io.OutputStream;
 public interface Message {
 	enum Type {
 		EMPTY,
-		LOGIN_REQUEST,
-		LOGIN_REPLY,
+		LOGIN_REQUEST,LOGIN_REPLY, 
+		ONLINEUSERS_REQUEST, ONLINEUSERS_REPLY
 	}
 	public void write(OutputStream os) throws IOException;
 	

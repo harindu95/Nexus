@@ -1,5 +1,6 @@
 package server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,12 +10,20 @@ import core.User;
 
 public class UserDatabase {
 	Map<String, User> users;
-
-	UserDatabase() {
+	Map<String, User> online;
+	
+	static UserDatabase instance = null;
+	
+	private UserDatabase() {
 		users = new HashMap<String, User>();
 		users.put("test", new User("test", "test", 0, 0));
+		online = new HashMap<>();
 	}
 
+	public void registerOnline(User u) {
+		online.put(u.getUsername(), u);
+	}
+	
 	User validate(Login_Request req) {
 		users.put("test", new User("test", "test", 0, 0));
 		String password = req.getPassword();
@@ -25,6 +34,7 @@ public class UserDatabase {
 		if (u != null) {
 
 			if (u.getPassword().equals(req.getPassword())) {
+				registerOnline(u);
 				return u;
 			}
 
@@ -33,5 +43,14 @@ public class UserDatabase {
 		return null;
 
 	}
+	
+	List<User> getOnlineUsers(){
+		return new ArrayList<>(online.values());
+	}
 
+	public static UserDatabase getInstance() {
+		if(instance == null)
+			instance = new UserDatabase();
+		return instance;
+	}
 }

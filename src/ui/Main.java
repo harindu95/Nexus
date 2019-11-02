@@ -61,4 +61,25 @@ public class Main extends Application {
 
 	}
 
+//	• User login/logout 
+//	Database to keep track of users and login credentials
+//TODO	• User accounts (profiles) on the game server
+//	Database to keep track of user’s WIns, Ranks, games played etc.
+//TODO	• Create a game room
+//	• List online users in the system
+//	• Join or leave a game room
+//	• chat in the game room
+//	Public
+//	• Interactive game playing (real-time update of game status to all players)
+//	Live game vs. turn based game?
+//	• Handle player disconnection and reconnection (pause and resume game)
+//	Keep track of user connection
+//	If they are disconnected: 
+//	Try to reconnect them 
+//	Remove them from the game is fail to connect after 3 attempts
+//	• Server checks game movements and calculates points (if applicable to the game)
+//	• interface to graphically display the game status
+//	• interface to play the game
+
+	
 }

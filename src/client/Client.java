@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import core.Login_Reply;
 import core.Login_Request;
 import core.Message;
+import core.OnlineUsers_Reply;
 
 public class Client implements Runnable {
 
@@ -39,24 +40,28 @@ public class Client implements Runnable {
 
 		while (true) {
 			if (output.size() > 0) {
-
 				System.out.println("Message available");
-				writeMessage(output.remove());	
-
+				writeMessage(output.remove());
 			} else {
 				byte[] header = new byte[2];
 				try {
-					is.read(header);
+					int length = is.read(header);
+					if(length < 2) {
+						continue;
+					}
 					int size = header[0];
 					Message.Type type = Message.Type.values()[header[1]];
-					if(type == Message.Type.LOGIN_REQUEST) {
+					if (type == Message.Type.LOGIN_REQUEST) {
 						Login_Request req = Login_Request.read(is);
-					}else if(type == Message.Type.LOGIN_REPLY) {
+					} else if (type == Message.Type.LOGIN_REPLY) {
 						Login_Reply reply = Login_Reply.read(is);
 						app.handle(reply);
+					} else if (type == Message.Type.ONLINEUSERS_REPLY) {
+						OnlineUsers_Reply reply = OnlineUsers_Reply.read(is);
+						app.handle(reply);
 					}
-				}catch(SocketTimeoutException e) {
-					
+				} catch (SocketTimeoutException e) {
+
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -68,21 +73,20 @@ public class Client implements Runnable {
 
 	public void setOutput(Message msg) {
 //		synchronized (output) {
-			output.add(msg);
+		output.add(msg);
 //		}
 	}
 
 	void writeMessage(Message msg) {
-		if (msg instanceof Login_Request) {
-			Login_Request req = (Login_Request) msg;
-			try {
-				req.write(os);
-				System.out.println("Message sent");
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
+		try {
+			msg.write(os);
+			System.out.println("Message sent");
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
 	}
 }

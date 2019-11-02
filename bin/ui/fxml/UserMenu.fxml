@@ -62,7 +62,7 @@
                         <Insets bottom="10.0" top="10.0" />
                      </VBox.margin>
                   </Button>
-                  <Button minWidth="150.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #023a41; -fx-opacity: 85%;" text="View Online Users" textFill="WHITE">
+                  <Button minWidth="150.0" mnemonicParsing="false" onAction="#handleViewOnlineUsers" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #023a41; -fx-opacity: 85%;" text="View Online Users" textFill="WHITE">
                      <font>
                         <Font name="Arial Bold" size="17.0" />
                      </font>
