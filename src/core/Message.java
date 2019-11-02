@@ -8,8 +8,9 @@ public interface Message {
 	enum Type {
 		EMPTY,
 		LOGIN_REQUEST,LOGIN_REPLY, 
-		ONLINEUSERS_REQUEST, ONLINEUSERS_REPLY
+		ONLINEUSERS_REQUEST, ONLINEUSERS_REPLY,
+		CREATEGAME_REQUEST, CREATEGAME_REPLY,
 	}
 	public void write(OutputStream os) throws IOException;
-	
+			
 }

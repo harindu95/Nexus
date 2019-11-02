@@ -3,7 +3,6 @@ package ui;
 import java.io.IOException;
 
 import client.Application;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,7 +10,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class UserMenu {
@@ -21,26 +19,29 @@ public class UserMenu {
 	@FXML
 	Label username_label;
 
-	public void initialize(Application app) {
+	public UserMenu(Application app) {
 		this.app = app;
+	}
+
+	public void initialize() {
 		username_label.setText(app.getUser().getUsername());
 	}
 
-	public void start(Stage window, Application app) {
+	public void start(Stage window) {
 		Parent root;
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/UserMenu.fxml"));
+			loader.setController(this);
 			root = loader.load();
 			Scene scene = new Scene(root);
-			UserMenu controller = loader.<UserMenu>getController();
-			controller.initialize(app);
+//			this.initialize();
 			window.setScene(scene);
 			window.setResizable(false);
 			window.setTitle("Nexus");
 			window.setOnCloseRequest(e -> System.exit(0));
 			window.show();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 
@@ -50,7 +51,7 @@ public class UserMenu {
 	void handleNewGameBtn(ActionEvent e) {
 
 		Stage stage = (Stage) ((Button) e.getSource()).getScene().getWindow();
-		NewGame newGame = new NewGame();
+		NewGame newGame = new NewGame(app);
 		newGame.start(stage);
 
 	}
@@ -62,6 +63,6 @@ public class UserMenu {
 		app.requestOnlineUsers();
 		app.setListPlayers(listPlayers);
 		listPlayers.start(stage, app);
-		
+
 	}
 }

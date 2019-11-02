@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+import core.CreateGame_Request;
 import core.Login_Request;
 import core.Message;
 import core.OnlineUsers_Request;
@@ -49,13 +50,17 @@ public class Connection extends Thread {
 						OnlineUsers_Request req = new OnlineUsers_Request();
 						System.out.println("Reading ONLINEUSERS_REQUEST");
 						app.handle(req);
+					}else if(type == Message.Type.CREATEGAME_REQUEST) {
+						CreateGame_Request req = CreateGame_Request.read(is);
+						System.out.println("Reading CREATEGAME_REQUEST");
+						app.handle(req);
 					}
 				} catch (SocketTimeoutException e) {
 
 //					System.out.println("Socket timeout");
 				} catch (IOException e) {
 
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 					break;
 				}
@@ -75,7 +80,7 @@ public class Connection extends Thread {
 			msg.write(os);
 			System.out.println("Message sent");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		
 			e.printStackTrace();
 
 		}

@@ -52,7 +52,7 @@
                         <Font name="Arial Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Label layoutX="144.0" layoutY="34.0" text="&lt;Game Name&gt;">
+                  <Label fx:id="gameName_Label" layoutX="144.0" layoutY="34.0" text="&lt;Game Name&gt;">
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>

@@ -2,6 +2,8 @@ package server;
 
 import java.util.List;
 
+import core.CreateGame_Reply;
+import core.CreateGame_Request;
 import core.Login_Reply;
 import core.Login_Request;
 import core.Message;
@@ -14,10 +16,12 @@ public class Application {
 	List<User> currentUsers;
 	UserDatabase users;
 	Connection con;
+	GameList games;
 	
 	Application(Connection con){
 		users = UserDatabase.getInstance();
 		this.con = con;
+		games = GameList.getInstance();
 	}
 	
 	public void handle(Message msg) {
@@ -31,6 +35,16 @@ public class Application {
 			List<User> online = users.getOnlineUsers();
 			OnlineUsers_Reply reply = new OnlineUsers_Reply(online);
 			con.writeMessage(reply);
+		}else if(msg instanceof CreateGame_Request) {
+			CreateGame_Request req = (CreateGame_Request)msg;
+			User u = users.getUser(req.getUserName());
+			if(u == null) {
+				//TODO: invalid user
+			}else {
+				int id = games.createGame(u, req.getGameName(), req.getMax());
+				CreateGame_Reply reply = new CreateGame_Reply(id);
+				con.writeMessage(reply);
+			}
 		}
 	}
 	

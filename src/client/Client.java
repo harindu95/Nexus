@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import core.CreateGame_Reply;
 import core.Login_Reply;
 import core.Login_Request;
 import core.Message;
@@ -59,11 +60,14 @@ public class Client implements Runnable {
 					} else if (type == Message.Type.ONLINEUSERS_REPLY) {
 						OnlineUsers_Reply reply = OnlineUsers_Reply.read(is);
 						app.handle(reply);
+					} else if(type == Message.Type.CREATEGAME_REPLY) {
+						CreateGame_Reply reply = CreateGame_Reply.read(is);
+						app.handle(reply);
 					}
 				} catch (SocketTimeoutException e) {
 
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				}
 			}
@@ -84,7 +88,7 @@ public class Client implements Runnable {
 			System.out.println("Message sent");
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 

@@ -48,6 +48,10 @@ public class UserDatabase {
 		return new ArrayList<>(online.values());
 	}
 
+	User getUser(String username) {
+		return users.get(username);
+	}
+	
 	public static UserDatabase getInstance() {
 		if(instance == null)
 			instance = new UserDatabase();

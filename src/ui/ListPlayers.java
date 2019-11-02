@@ -33,7 +33,7 @@ public class ListPlayers {
 			window.setOnCloseRequest(e -> System.exit(0));
 			window.show();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 

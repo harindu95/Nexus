@@ -1,10 +1,6 @@
 package ui;
 
-import java.io.IOException;
-
-import client.Client;
-import core.Login_Request;
-import javafx.application.*;
+import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -80,6 +76,6 @@ public class Main extends Application {
 //	• Server checks game movements and calculates points (if applicable to the game)
 //	• interface to graphically display the game status
 //	• interface to play the game
-
+//TODO close client socket
 	
 }

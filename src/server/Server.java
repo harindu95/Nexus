@@ -27,13 +27,13 @@ public class Server {
 				s.listen();
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		
 			e.printStackTrace();
 		}finally {
 			try {
 				s.serverSocket.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+			
 				e.printStackTrace();
 			}
 		}

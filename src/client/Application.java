@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.List;
 
+import core.CreateGame_Reply;
+import core.CreateGame_Request;
+import core.Game;
 import core.Login_Reply;
 import core.Login_Request;
 import core.Message;
@@ -12,6 +15,7 @@ import core.OnlineUsers_Request;
 import core.User;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import ui.GameLobby;
 import ui.ListPlayers;
 import ui.UserMenu;
 
@@ -20,7 +24,10 @@ public class Application {
 	User u;
 	Stage loginStage;
 	ListPlayers listPlayers;
-	
+	Game currentGame;
+	private Stage newGameStage;
+	GameLobby lobby;
+
 	public Application() throws UnknownHostException, IOException {
 		c = new Client(this);
 		Thread t = new Thread(c);
@@ -32,10 +39,36 @@ public class Application {
 			Login_Reply reply = (Login_Reply) msg;
 //			System.out.println(reply.getUserName());
 			loginReply(reply);
-		}else if(msg instanceof OnlineUsers_Reply) {
+		} else if (msg instanceof OnlineUsers_Reply) {
 			OnlineUsers_Reply reply = (OnlineUsers_Reply) msg;
 			updateOnlineUsers(reply.getUsers());
+		} else if (msg instanceof CreateGame_Reply) {
+			CreateGame_Reply reply = (CreateGame_Reply) msg;
+			setGame(reply);
 		}
+	}
+
+	private void setGame(CreateGame_Reply reply) {
+		currentGame.setGameId(reply.getGameId());
+		showGameLobby();
+	}
+
+	private void showGameLobby() {
+
+		lobby = new GameLobby(this);
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run() {
+				lobby.start(newGameStage);
+//				lobby.update();
+			}
+		});
+
+	}
+
+	public Game getCurrentGame() {
+		return currentGame;
 	}
 
 	public void login(String username, String password) {
@@ -50,25 +83,25 @@ public class Application {
 	}
 
 	public void showUserMenu(String username) {
-		
+
 		Application app = this;
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
 				// javaFX operations should go here
-	        	loginStage.close();
+				loginStage.close();
 				Stage window = new Stage();
-				UserMenu userMenu = new UserMenu();
-				userMenu.start(window, app);
+				UserMenu userMenu = new UserMenu(app);
+				userMenu.start(window);
 			}
 		});
-		
+
 	}
-	
+
 	public void setLoginStage(Stage login) {
 		this.loginStage = login;
 	}
-	
+
 	public User getUser() {
 		return u;
 	}
@@ -77,20 +110,27 @@ public class Application {
 		OnlineUsers_Request req = new OnlineUsers_Request();
 		c.setOutput(req);
 	}
-	
+
 	public void updateOnlineUsers(List<User> online) {
-		
+
 		Platform.runLater(new Runnable() {
-			
+
 			@Override
 			public void run() {
-				listPlayers.update(online);	
+				listPlayers.update(online);
 			}
 		});
 	}
 
 	public void setListPlayers(ListPlayers controller) {
 		listPlayers = controller;
+	}
+
+	public void createGame(Stage newGame, String gameName, int maxPlayers) {
+		CreateGame_Request req = new CreateGame_Request(u.getUsername(), gameName, maxPlayers);
+		currentGame = new Game(u, gameName, maxPlayers);
+		c.setOutput(req);
+		newGameStage = newGame;
 	}
 
 }
