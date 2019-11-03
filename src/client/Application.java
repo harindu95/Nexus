@@ -2,12 +2,11 @@ package client;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.List;
 
-import core.CreateGame_Reply;
+import core.ChatMessage;
 import core.CreateGame_Request;
-import core.Game;
+import core.GameRoom;
 import core.JoinGame_Reply;
 import core.JoinGame_Request;
 import core.Login_Reply;
@@ -19,8 +18,6 @@ import core.User;
 import core.ViewGames_Reply;
 import core.ViewGames_Request;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 import ui.GameLobby;
 import ui.ListPlayers;
@@ -32,7 +29,7 @@ public class Application {
 	User u;
 	Stage loginStage;
 	ListPlayers listPlayers;
-	Game currentGame;
+	GameRoom currentGame;
 	Stage mainStage;
 	GameLobby lobby;
 	private ViewGames viewGames;
@@ -52,25 +49,31 @@ public class Application {
 		} else if (msg instanceof OnlineUsers_Reply) {
 			OnlineUsers_Reply reply = (OnlineUsers_Reply) msg;
 			updateOnlineUsers(reply.getUsers());
-		} else if (msg instanceof CreateGame_Reply) {
-			CreateGame_Reply reply = (CreateGame_Reply) msg;
-			setGame(reply);
 		}else if(msg instanceof ViewGames_Reply) {
 			ViewGames_Reply reply = (ViewGames_Reply) msg;
 			updateViewGames(reply.getGames());
 		}else if(msg instanceof JoinGame_Reply) {
 			JoinGame_Reply reply = (JoinGame_Reply) msg;
 			updateGameLobby(reply);
+		}else if(msg instanceof ChatMessage) {
+			ChatMessage chatMsg = (ChatMessage)msg;
+			updateChat(chatMsg);
 		}
 	}
 
-	private void updateGameLobby(JoinGame_Reply reply) {
+	private void updateChat(ChatMessage chatMsg) {
+		if(chatMsg.getId() == currentGame.getId()) {
+			lobby.addMsg(chatMsg);
+		}
 		
+	}
+
+	private void updateGameLobby(JoinGame_Reply reply) {
 		currentGame = reply.getGame();
 		lobby.update(currentGame);
 	}
 
-	private void updateViewGames(List<Game> games) {
+	private void updateViewGames(List<GameRoom> games) {
 		
 		Platform.runLater(new Runnable() {
 			
@@ -82,11 +85,6 @@ public class Application {
 		
 	}
 
-	private void setGame(CreateGame_Reply reply) {
-		currentGame.setGameId(reply.getGameId());
-		showGameLobby();
-		lobby.update(currentGame);
-	}
 
 	private void showGameLobby() {
 
@@ -102,7 +100,7 @@ public class Application {
 
 	}
 
-	public Game getCurrentGame() {
+	public GameRoom getCurrentGame() {
 		return currentGame;
 	}
 
@@ -176,8 +174,9 @@ public class Application {
 
 	public void createGame(String gameName, int maxPlayers) {
 		CreateGame_Request req = new CreateGame_Request(u.getUsername(), gameName, maxPlayers);
-		currentGame = new Game(u, gameName, maxPlayers);
+		currentGame = new GameRoom(u, gameName, maxPlayers);
 		c.setOutput(req);
+		showGameLobby();
 	}
 
 	public void viewGames(ViewGames viewGames) {
@@ -191,6 +190,12 @@ public class Application {
 		JoinGame_Request req = new JoinGame_Request(u.getUsername(), id);
 		c.setOutput(req);
 		showGameLobby();
+	}
+
+	public void sendMsg(String msg) {
+		ChatMessage chatMsg = new ChatMessage(msg, currentGame.getId(), u.getUsername());
+		c.setOutput(chatMsg);
+		
 	}
 
 }

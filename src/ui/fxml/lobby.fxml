@@ -89,19 +89,19 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
                   </Label>
-                  <TextArea editable="false" prefHeight="377.0" prefWidth="250.0" promptText="chat messages" VBox.vgrow="ALWAYS">
+                  <TextArea fx:id="chat" editable="false" prefHeight="377.0" prefWidth="250.0" promptText="chat messages" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>
                   </TextArea>
                   <HBox alignment="BASELINE_CENTER" spacing="15.0" style="-fx-background-color: #1e9679;">
                      <children>
-                        <TextField minWidth="150.0" prefHeight="25.0" prefWidth="190.0" promptText="Send Message Here" HBox.hgrow="ALWAYS">
+                        <TextField fx:id="msg_field" minWidth="150.0" onAction="#handleSend" prefHeight="25.0" prefWidth="190.0" promptText="Send Message Here" HBox.hgrow="ALWAYS">
                            <font>
                               <Font name="Arial" size="10.0" />
                            </font>
                         </TextField>
-                        <Button alignment="CENTER" minWidth="50.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" style="-fx-background-color: #023a41; -fx-border-color: FFFF;" text="Send" textFill="WHITE">
+                        <Button alignment="CENTER" minWidth="50.0" mnemonicParsing="false" onAction="#handleSend" prefHeight="25.0" prefWidth="60.0" style="-fx-background-color: #023a41; -fx-border-color: FFFF;" text="Send" textFill="WHITE">
                            <HBox.margin>
                               <Insets right="5.0" top="3.0" />
                            </HBox.margin>

@@ -20,11 +20,12 @@ public class UserDatabase {
 		online = new HashMap<>();
 	}
 
-	public void registerOnline(User u) {
+	public void registerOnline(User u,Application app) {
 		online.put(u.getUsername(), u);
+		u.setConnection(app);
 	}
 	
-	User validate(Login_Request req) {
+	User validate(Login_Request req, Application app) {
 		users.put("test", new User("test", "test", 0, 0));
 		String password = req.getPassword();
 		String username = req.getUserName();
@@ -34,7 +35,7 @@ public class UserDatabase {
 		if (u != null) {
 
 			if (u.getPassword().equals(req.getPassword())) {
-				registerOnline(u);
+				registerOnline(u, app);
 				return u;
 			}
 

@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Game {
+import server.Application;
+
+public class GameRoom {
 	String name;
 
 	Map<String, User> users = new HashMap<>();
@@ -13,14 +15,14 @@ public class Game {
 	int maxPlayers = 1;
 	int id = 0;
 
-	public Game(User creator, String name, int max) {
+	public GameRoom(User creator, String name, int max) {
 		this.creator = creator;
 		this.name = name;
 		maxPlayers = max;
 		join(creator);
 	}
 
-	public Game(String name, int max) {
+	public GameRoom(String name, int max) {
 		this.name = name;
 		maxPlayers = max;
 	}
@@ -67,5 +69,15 @@ public class Game {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public void sendMsg(String username, String txt) {
+		List<User> players = getUsers();
+		for(User u: players) {
+			Application serverApp = u.getConnection();
+			if(serverApp != null)
+				serverApp.sendMsg(txt, id, username);
+		}
+		
 	}
 }

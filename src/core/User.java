@@ -1,11 +1,14 @@
 package core;
 
+import server.Application;
+
 public class User {
 	private String username = "";
 	private String password = "";
 	int totalGames = 0;
 	int wins = 0;
-	
+	server.Application serverApp;
+		
 	public User(String u, String p, int total, int win) {
 		username = u;
 		setPassword(p);
@@ -47,6 +50,14 @@ public class User {
 
 	public void setWins(int wins) {
 		this.wins = wins;
+	}
+
+	public void setConnection(Application app) {
+		serverApp = app;		
+	}
+
+	public Application getConnection() {
+		return serverApp;
 	}
 	
 }

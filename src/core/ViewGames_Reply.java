@@ -10,13 +10,13 @@ import core.Message.Type;
 
 public class ViewGames_Reply implements Message{
 
-	List<Game> games;
+	List<GameRoom> games;
 	
-	public List<Game> getGames() {
+	public List<GameRoom> getGames() {
 		return games;
 	}
 
-	public void setGames(List<Game> games) {
+	public void setGames(List<GameRoom> games) {
 		this.games = games;
 	}
 
@@ -24,12 +24,12 @@ public class ViewGames_Reply implements Message{
 	byte type = (byte)Type.VIEWGAMES_REPLY.ordinal();
 	byte status = 0;
 	
-	public ViewGames_Reply(List<Game> games) {
+	public ViewGames_Reply(List<GameRoom> games) {
 		this.games = games;
 	}
 
 	private ViewGames_Reply() {
-		games = new ArrayList<Game>();
+		games = new ArrayList<GameRoom>();
 	}
 	
 	@Override
@@ -38,7 +38,7 @@ public class ViewGames_Reply implements Message{
 		byte size = (byte) (numGames * (30 + 1 + 1) + 3);
 		byte[] header = {size, type, status, numGames};
 		os.write(header);
-		for(Game g: games) {
+		for(GameRoom g: games) {
 			byte id = (byte) g.id;
 			byte max = (byte) g.maxPlayers;
 			byte[] info = {id, max};
@@ -64,7 +64,7 @@ public class ViewGames_Reply implements Message{
 			is.read(name);
 			byte id = info[0];
 			byte max = info[1];
-			Game g = new Game( Util.toString(name), max);
+			GameRoom g = new GameRoom( Util.toString(name), max);
 			g.setId(id);
 			reply.games.add(g);
 		}

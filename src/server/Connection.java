@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+import core.ChatMessage;
 import core.CreateGame_Request;
 import core.JoinGame_Request;
 import core.Login_Request;
@@ -67,6 +68,10 @@ public class Connection extends Thread {
 						JoinGame_Request req = JoinGame_Request.read(is);
 						System.out.println("Reading JOINGAME_REQUEST");
 						app.handle(req);
+					}else if(type == Message.Type.CHATMESSAGE) {
+						ChatMessage msg = ChatMessage.read(is);
+						System.out.println("Reading CHATMESSAGE");
+						app.handle(msg);
 					}
 				} catch (SocketTimeoutException e) {
 

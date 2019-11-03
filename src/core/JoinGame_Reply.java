@@ -9,13 +9,13 @@ public class JoinGame_Reply implements Message {
 	
 	byte type = (byte) Type.JOINGAME_REPLY.ordinal();
 	byte status = 0;
-	private Game game;
+	private GameRoom game;
 
 	private JoinGame_Reply() {
 		
 	}
 	
-	public JoinGame_Reply(Game g) {
+	public JoinGame_Reply(GameRoom g) {
 		this.game = g;
 	}
 
@@ -52,7 +52,7 @@ public class JoinGame_Reply implements Message {
 		int max = header[1];
 		int numPlayers = header[2];
 		
-		reply.game = new Game( Util.toString(gameName),max);
+		reply.game = new GameRoom( Util.toString(gameName),max);
 		reply.game.setId(gameId);
 		for(int i=0;i <numPlayers;i++ ) {
 			byte[] username = new byte[16];
@@ -64,7 +64,7 @@ public class JoinGame_Reply implements Message {
 		return reply;
 	}
 	
-	public Game getGame() {
+	public GameRoom getGame() {
 		return game;
 	}
 

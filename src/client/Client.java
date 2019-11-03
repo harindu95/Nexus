@@ -6,15 +6,12 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import core.CreateGame_Reply;
+import core.ChatMessage;
 import core.JoinGame_Reply;
 import core.Login_Reply;
-import core.Login_Request;
 import core.Message;
 import core.OnlineUsers_Reply;
 import core.ViewGames_Reply;
@@ -63,16 +60,18 @@ public class Client implements Runnable {
 					} else if (type == Message.Type.ONLINEUSERS_REPLY) {
 						OnlineUsers_Reply reply = OnlineUsers_Reply.read(is);
 						app.handle(reply);
-					} else if(type == Message.Type.CREATEGAME_REPLY) {
-						CreateGame_Reply reply = CreateGame_Reply.read(is);
-						app.handle(reply);
 					} else if(type == Message.Type.VIEWGAMES_REPLY) {
 						ViewGames_Reply reply = ViewGames_Reply.read(is);
 						app.handle(reply);
 					} else if(type == Message.Type.JOINGAME_REPLY) {
+						System.out.println("JOINGAME_REPLY");
 						JoinGame_Reply reply = JoinGame_Reply.read(is);
 						app.handle(reply);
+					} else if(type == Message.Type.CHATMESSAGE) {
+						ChatMessage msg = ChatMessage.read(is);
+						app.handle(msg);
 					}
+					
 				} catch (SocketTimeoutException e) {
 
 				} catch (IOException e) {

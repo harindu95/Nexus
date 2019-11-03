@@ -3,11 +3,11 @@ package server;
 import java.util.ArrayList;
 import java.util.List;
 
-import core.Game;
+import core.GameRoom;
 import core.User;
 
 public class GameList {
-	List<Game> games;
+	List<GameRoom> games;
 
 	private static GameList instance = new GameList();
 
@@ -19,22 +19,32 @@ public class GameList {
 		return instance;
 	}
 
-	public int createGame(User creator, String gameName, int max) {
-		Game g = new Game(creator, gameName, max);
+	public GameRoom createGame(User creator, String gameName, int max) {
+		GameRoom g = new GameRoom(creator, gameName, max);
 		int id = games.size();
 		g.setId(id);
 		games.add(g);
-		return id;
+		return g;
 	}
 	
-	public List<Game> getGames(){
+	public List<GameRoom> getGames(){
 		return games;
 		
 	}
 	
-	public Game joinGame(User player, int gameId) {
-		Game g = games.get(gameId);
+	public GameRoom joinGame(User player, int gameId) {
+		GameRoom g = games.get(gameId);
 		g.join(player);
+		
 		return g;
 	}
+
+	public GameRoom getGameRoom(int id) {
+		if(id < games.size()) {
+			return games.get(id);
+		}
+		return null;
+	}
+	
+	
 }

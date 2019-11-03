@@ -12,6 +12,7 @@ public interface Message {
 		CREATEGAME_REQUEST, CREATEGAME_REPLY,
 		VIEWGAMES_REQUEST, VIEWGAMES_REPLY,
 		JOINGAME_REQUEST, JOINGAME_REPLY,
+		CHATMESSAGE,
 	}
 	public void write(OutputStream os) throws IOException;
 			
