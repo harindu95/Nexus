@@ -14,6 +14,7 @@ import core.Login_Request;
 import core.Logout_Request;
 import core.Message;
 import core.OnlineUsers_Request;
+import core.Reconnect_Request;
 import core.ViewGames_Request;
 
 public class Connection extends Thread {
@@ -77,6 +78,9 @@ public class Connection extends Thread {
 					} else if (type == Message.Type.LOGOUT_REQUEST) {
 						Logout_Request req = Logout_Request.read(is);
 						app.handle(req);
+					} else if(type == Message.Type.RECONNECT_REQUEST) {
+						Reconnect_Request req = Reconnect_Request.read(is);
+						app.handle(req);
 					}
 				} catch (SocketTimeoutException e) {
 
@@ -92,6 +96,10 @@ public class Connection extends Thread {
 
 	}
 
+	public void send(Message msg) {
+		output.add(msg);
+	}
+	
 	void writeMessage(Message msg) {
 
 		try {

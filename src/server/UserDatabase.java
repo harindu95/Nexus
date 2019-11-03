@@ -29,17 +29,15 @@ public class UserDatabase {
 		online.remove(u.getUsername());
 	}
 	
-	User validate(Login_Request req, Application app) {
+	User validate(String username, String password) {
 		users.put("test", new User("test", "test", 0, 0));
-		String password = req.getPassword();
-		String username = req.getUserName();
-		
+	
 		users.put(username, new User(username, password, 0,0));
-		User u = users.get(req.getUserName());
+		User u = users.get(username);
 		if (u != null) {
 
-			if (u.getPassword().equals(req.getPassword())) {
-				registerOnline(u, app);
+			if (u.getPassword().equals(password)) {
+				
 				return u;
 			}
 

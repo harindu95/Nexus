@@ -6,8 +6,8 @@ import java.io.OutputStream;
 
 public class Login_Request extends Message{
 
-	byte[] username = new byte[16];
-	byte[] password = new byte[25];
+	byte[] username = new byte[USERNAME_SIZE];
+	byte[] password = new byte[PASSWORD_SIZE];
 		
 	
 	private Login_Request() {

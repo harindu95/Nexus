@@ -15,6 +15,8 @@ import core.Logout_Request;
 import core.Message;
 import core.OnlineUsers_Reply;
 import core.OnlineUsers_Request;
+import core.Reconnect_Reply;
+import core.Reconnect_Request;
 import core.User;
 import core.ViewGames_Reply;
 import core.ViewGames_Request;
@@ -36,14 +38,19 @@ public class Application {
 	public void handle(Message msg) {
 		if (msg instanceof Login_Request) {
 			Login_Request req = (Login_Request) msg;
-			User u = users.validate(req, this);
+			User u = users.validate(req.getUserName(), req.getPassword());
 			System.out.println("Validating User");
-			Login_Reply reply = new Login_Reply(u);
-			con.writeMessage(reply);
+			if (u == null) {
+				//TODO : invalid login
+			} else {
+				users.registerOnline(u, this);
+				Login_Reply reply = new Login_Reply(u);
+				con.send(reply);
+			}
 		} else if (msg instanceof OnlineUsers_Request) {
 			List<User> online = users.getOnlineUsers();
 			OnlineUsers_Reply reply = new OnlineUsers_Reply(online);
-			con.writeMessage(reply);
+			con.send(reply);
 		} else if (msg instanceof CreateGame_Request) {
 			CreateGame_Request req = (CreateGame_Request) msg;
 			User u = users.getUser(req.getUserName());
@@ -52,25 +59,25 @@ public class Application {
 			} else {
 				GameRoom game = games.createGame(u, req.getGameName(), req.getMax());
 				JoinGame_Reply reply = new JoinGame_Reply(game);
-				con.writeMessage(reply);
+				con.send(reply);
 			}
 		} else if (msg instanceof ViewGames_Request) {
 			ViewGames_Request req = (ViewGames_Request) msg;
 			List<GameRoom> gameList = games.getGames();
 			ViewGames_Reply reply = new ViewGames_Reply(gameList);
-			con.writeMessage(reply);
+			con.send(reply);
 		} else if (msg instanceof JoinGame_Request) {
 			JoinGame_Request req = (JoinGame_Request) msg;
 			User player = users.getUser(req.getUsername());
 			if (player == null) {
-				//TODO: Error
+				// TODO: Error
 				System.out.println("Invalid username");
 			} else {
 				int gameId = req.getGameId();
 				GameRoom g = games.joinGame(player, gameId);
 				// TODO: Check max players
 				JoinGame_Reply reply = new JoinGame_Reply(g);
-				con.writeMessage(reply);
+				con.send(reply);
 				String txt = String.format("%s joined the game", player.getUsername());
 				g.sendMsg(player.getUsername(), txt);
 
@@ -79,26 +86,38 @@ public class Application {
 			ChatMessage chatMsg = (ChatMessage) msg;
 			GameRoom g = games.getGameRoom(chatMsg.getId());
 			if (g == null) {
-				//TODO: handle error
+				// TODO: handle error
 			} else {
 				g.sendMsg(chatMsg.getUsername(), chatMsg.getMessage());
 			}
-		}else if(msg instanceof Logout_Request) {
-			Logout_Request req = (Logout_Request)msg;
+		} else if (msg instanceof Logout_Request) {
+			Logout_Request req = (Logout_Request) msg;
 			User u = users.getUser(req.getUsername());
-			if(u == null) {
-				//TODO: error if user == null
-			}else {
+			if (u == null) {
+				// TODO: error if user == null
+			} else {
 				users.logout(u);
 				Logout_Reply reply = new Logout_Reply(u.getUsername());
-				con.writeMessage(reply);
+				con.send(reply);
+			}
+		} else if (msg instanceof Reconnect_Request) {
+			Reconnect_Request req = (Reconnect_Request) msg;
+			User u = users.validate(req.getUsername(), req.getPassword());
+			System.out.println("Validating User");
+			if( u == null) {
+				//TODO: INVALID user
+			}else {
+				Application app = u.getConnection();
+				con.app = app;
+				Reconnect_Reply reply = new Reconnect_Reply(u.getUsername());
+				con.send(reply);
 			}
 		}
 	}
 
 	public void sendMsg(String msg, int gameId, String username) {
 		ChatMessage chatMsg = new ChatMessage(msg, gameId, username);
-		con.writeMessage(chatMsg);
+		con.send(chatMsg);
 
 	}
 

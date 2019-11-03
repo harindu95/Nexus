@@ -16,6 +16,8 @@ import core.Logout_Request;
 import core.Message;
 import core.OnlineUsers_Reply;
 import core.OnlineUsers_Request;
+import core.Reconnect_Reply;
+import core.Reconnect_Request;
 import core.User;
 import core.ViewGames_Reply;
 import core.ViewGames_Request;
@@ -37,6 +39,7 @@ public class Application {
 	GameLobby lobby;
 	private ViewGames viewGames;
 	private UserMenu userMenu;
+	int retries = 0;
 
 	public Application() throws UnknownHostException, IOException {
 		con = new Connection(this);
@@ -64,7 +67,15 @@ public class Application {
 		} else if (msg instanceof Logout_Reply) {
 			Logout_Reply reply = (Logout_Reply) msg;
 			handleLogout(reply);
+		} else if(msg instanceof Reconnect_Reply) {
+			Reconnect_Reply reply = (Reconnect_Reply) msg;
+			reconnected();
 		}
+	}
+
+	private void reconnected() {
+		
+		retries = 0;
 	}
 
 	private void handleLogout(Logout_Reply reply) {
@@ -230,5 +241,23 @@ public class Application {
 	public void logout() {
 		Logout_Request req = new Logout_Request(u.getUsername());
 		con.send(req);
+	}
+
+	public void reconnect() throws IOException, InterruptedException {
+		retries++;
+		Thread.sleep(300);
+		if(retries > 30) {
+			throw new IOException("Disconnected from server. Failed to restablish connection");
+		}
+		try {
+			con.reset();
+			Reconnect_Request req = new Reconnect_Request(u.getUsername(), u.getPassword());
+			con.send(req);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

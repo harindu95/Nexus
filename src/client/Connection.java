@@ -15,6 +15,7 @@ import core.Login_Reply;
 import core.Logout_Reply;
 import core.Message;
 import core.OnlineUsers_Reply;
+import core.Reconnect_Reply;
 import core.ViewGames_Reply;
 
 public class Connection implements Runnable {
@@ -26,15 +27,7 @@ public class Connection implements Runnable {
 
 	public Connection(Application app) throws UnknownHostException, IOException {
 		this.app = app;
-		// Initialize a client socket connection to the server
-		Socket clientSocket = new Socket("0.0.0.0", 3000);
-
-		// Initialize input and an output stream for the connection(s)
-		os = clientSocket.getOutputStream();
-
-		is = clientSocket.getInputStream();
-		clientSocket.setSoTimeout(50);
-		output = new ConcurrentLinkedQueue<Message>();
+		init();
 	}
 
 	public void run() {
@@ -47,12 +40,15 @@ public class Connection implements Runnable {
 				byte[] header = new byte[2];
 				try {
 					int length = is.read(header);
-					if(length < 2) {
-						continue;
+					if (length < 2) {
+						if (length == -1) {
+							// Disconnected !!
+							app.reconnect();
+						}
 					}
 					int size = header[0];
 					byte t = header[1];
-					if(t >= Message.Type.values().length)
+					if (t >= Message.Type.values().length)
 						continue;
 					Message.Type type = Message.Type.values()[t];
 					System.out.println("Reading message :" + type.toString());
@@ -62,25 +58,31 @@ public class Connection implements Runnable {
 					} else if (type == Message.Type.ONLINEUSERS_REPLY) {
 						OnlineUsers_Reply reply = OnlineUsers_Reply.read(is);
 						app.handle(reply);
-					} else if(type == Message.Type.VIEWGAMES_REPLY) {
+					} else if (type == Message.Type.VIEWGAMES_REPLY) {
 						ViewGames_Reply reply = ViewGames_Reply.read(is);
 						app.handle(reply);
-					} else if(type == Message.Type.JOINGAME_REPLY) {
+					} else if (type == Message.Type.JOINGAME_REPLY) {
 						System.out.println("JOINGAME_REPLY");
 						JoinGame_Reply reply = JoinGame_Reply.read(is);
 						app.handle(reply);
-					} else if(type == Message.Type.CHATMESSAGE) {
+					} else if (type == Message.Type.CHATMESSAGE) {
 						ChatMessage msg = ChatMessage.read(is);
 						app.handle(msg);
-					} else if(type == Message.Type.LOGOUT_REPLY) {
+					} else if (type == Message.Type.LOGOUT_REPLY) {
 						Logout_Reply reply = Logout_Reply.read(is);
 						app.handle(reply);
+					}else if(type == Message.Type.RECONNECT_REPLY) {
+						Reconnect_Reply reply = Reconnect_Reply.read(is);
+						app.handle(reply);
 					}
-					
+
 				} catch (SocketTimeoutException e) {
 
 				} catch (IOException e) {
-					
+
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -99,9 +101,26 @@ public class Connection implements Runnable {
 			System.out.println("Sent :" + msg.toString());
 
 		} catch (IOException e) {
-			
+
 			e.printStackTrace();
 		}
 
+	}
+
+	private void init() throws IOException {
+		// Initialize a client socket connection to the server
+		Socket clientSocket = new Socket("0.0.0.0", 3000);
+
+		// Initialize input and an output stream for the connection(s)
+		os = clientSocket.getOutputStream();
+
+		is = clientSocket.getInputStream();
+		clientSocket.setSoTimeout(50);
+		output = new ConcurrentLinkedQueue<Message>();
+
+	}
+	
+	public void reset() throws IOException {
+		init();
 	}
 }
