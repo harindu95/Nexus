@@ -28,7 +28,7 @@ import ui.UserMenu;
 import ui.ViewGames;
 
 public class Application {
-	Client c;
+	Connection con;
 	User u;
 	Main login;
 	ListPlayers listPlayers;
@@ -39,8 +39,8 @@ public class Application {
 	private UserMenu userMenu;
 
 	public Application() throws UnknownHostException, IOException {
-		c = new Client(this);
-		Thread t = new Thread(c);
+		con = new Connection(this);
+		Thread t = new Thread(con);
 		t.start();
 	}
 
@@ -135,7 +135,7 @@ public class Application {
 
 	public void login(String username, String password) {
 		Login_Request req = new Login_Request(username, password);
-		c.setOutput(req);
+		con.send(req);
 	}
 
 	public void loginReply(Login_Reply reply) {
@@ -183,7 +183,7 @@ public class Application {
 
 	public void requestOnlineUsers() {
 		OnlineUsers_Request req = new OnlineUsers_Request();
-		c.setOutput(req);
+		con.send(req);
 	}
 
 	public void updateOnlineUsers(List<User> online) {
@@ -204,31 +204,31 @@ public class Application {
 	public void createGame(String gameName, int maxPlayers) {
 		CreateGame_Request req = new CreateGame_Request(u.getUsername(), gameName, maxPlayers);
 		currentGame = new GameRoom(u, gameName, maxPlayers);
-		c.setOutput(req);
+		con.send(req);
 		showGameLobby();
 	}
 
 	public void viewGames(ViewGames viewGames) {
 		this.viewGames = viewGames;
 		ViewGames_Request req = new ViewGames_Request();
-		c.setOutput(req);
+		con.send(req);
 	}
 
 	public void joinGame(int id) {
 
 		JoinGame_Request req = new JoinGame_Request(u.getUsername(), id);
-		c.setOutput(req);
+		con.send(req);
 		showGameLobby();
 	}
 
 	public void sendMsg(String msg) {
 		ChatMessage chatMsg = new ChatMessage(msg, currentGame.getId(), u.getUsername());
-		c.setOutput(chatMsg);
+		con.send(chatMsg);
 
 	}
 
 	public void logout() {
 		Logout_Request req = new Logout_Request(u.getUsername());
-		c.setOutput(req);
+		con.send(req);
 	}
 }

@@ -4,14 +4,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class Logout_Request implements Message{
-	byte[] username = new byte[16];
-	byte type = (byte)Type.LOGOUT_REQUEST.ordinal();
+import core.Message.Type;
 
+public class Logout_Request extends Message{
+	byte[] username = new byte[16];
+	
 	private Logout_Request() {
+		super(Type.LOGOUT_REQUEST);
 	}
 	
 	public Logout_Request(String username) {
+		super(Type.LOGOUT_REQUEST);
 		Util.strncpy(this.username, username);
 	}
 	

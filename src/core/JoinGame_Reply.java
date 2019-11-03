@@ -5,17 +5,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-public class JoinGame_Reply implements Message {
+import core.Message.Type;
+
+public class JoinGame_Reply extends Message {
 	
-	byte type = (byte) Type.JOINGAME_REPLY.ordinal();
 	byte status = 0;
 	private GameRoom game;
 
 	private JoinGame_Reply() {
-		
+		super(Type.JOINGAME_REPLY);
 	}
 	
 	public JoinGame_Reply(GameRoom g) {
+		super(Type.JOINGAME_REPLY);
 		this.game = g;
 	}
 

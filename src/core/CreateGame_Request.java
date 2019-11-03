@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class CreateGame_Request implements Message {
+import core.Message.Type;
+
+public class CreateGame_Request extends Message {
 
 //	Size(first byte) = 1 byte
 //			Message type = 1 byte
@@ -14,16 +16,17 @@ public class CreateGame_Request implements Message {
 	byte[] username = new byte[16];
 	byte[] gamename = new byte[30];
 	byte max = 0;
-	byte type = (byte)Message.Type.CREATEGAME_REQUEST.ordinal();
+	
 	
 	public CreateGame_Request(String username, String gameName, int max) {
+		super(Type.CREATEGAME_REQUEST);
 		this.max = (byte) max;
 		Util.strncpy(this.username,username);
 		Util.strncpy(gamename, gameName);
 	}
 
 	private CreateGame_Request() {
-		
+		super(Type.CREATEGAME_REQUEST);
 	}
 
 	@Override

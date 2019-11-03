@@ -4,14 +4,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class Logout_Reply implements Message {
-	byte[] username = new byte[16];
-	byte type = (byte) Type.LOGOUT_REPLY.ordinal();
+import core.Message.Type;
 
+public class Logout_Reply extends Message {
+	byte[] username = new byte[16];
+	
 	private Logout_Reply() {
+		super(Type.LOGOUT_REPLY);
 	}
 
 	public Logout_Reply(String username) {
+		super(Type.LOGOUT_REPLY);
 		Util.strncpy(this.username, username);
 	}
 

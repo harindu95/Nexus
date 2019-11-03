@@ -4,11 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class Login_Reply implements Message {
+import core.Message.Type;
+
+public class Login_Reply extends Message {
 
 	byte[] username = new byte[16];
 	byte[] password = new byte[25];
-	byte type = (byte) Message.Type.LOGIN_REPLY.ordinal();
 	byte total = 0;
 	byte wins = 0;
 	byte status = 0;
@@ -19,7 +20,7 @@ public class Login_Reply implements Message {
 	}
 	
 	private Login_Reply() {
-
+		super(Type.LOGIN_REPLY);
 	}
 
 	public byte[] getUsername() {
@@ -67,6 +68,7 @@ public class Login_Reply implements Message {
 	}
 
 	public Login_Reply(User u) {
+		super(Type.LOGIN_REPLY);
 		if (u == null) {
 			this.status = (byte)error.INVALID.ordinal(); 
 		} else {

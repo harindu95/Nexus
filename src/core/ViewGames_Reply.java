@@ -8,7 +8,7 @@ import java.util.List;
 
 import core.Message.Type;
 
-public class ViewGames_Reply implements Message{
+public class ViewGames_Reply extends Message{
 
 	List<GameRoom> games;
 	
@@ -21,14 +21,15 @@ public class ViewGames_Reply implements Message{
 	}
 
 
-	byte type = (byte)Type.VIEWGAMES_REPLY.ordinal();
 	byte status = 0;
 	
 	public ViewGames_Reply(List<GameRoom> games) {
+		super(Type.VIEWGAMES_REPLY);
 		this.games = games;
 	}
 
 	private ViewGames_Reply() {
+		super(Type.VIEWGAMES_REPLY);
 		games = new ArrayList<GameRoom>();
 	}
 	

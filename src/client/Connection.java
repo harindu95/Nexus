@@ -17,14 +17,14 @@ import core.Message;
 import core.OnlineUsers_Reply;
 import core.ViewGames_Reply;
 
-public class Client implements Runnable {
+public class Connection implements Runnable {
 
 	InputStream is;
 	OutputStream os;
 	public Queue<Message> output = null;
 	Application app;
 
-	public Client(Application app) throws UnknownHostException, IOException {
+	public Connection(Application app) throws UnknownHostException, IOException {
 		this.app = app;
 		// Initialize a client socket connection to the server
 		Socket clientSocket = new Socket("0.0.0.0", 3000);
@@ -55,6 +55,7 @@ public class Client implements Runnable {
 					if(t >= Message.Type.values().length)
 						continue;
 					Message.Type type = Message.Type.values()[t];
+					System.out.println("Reading message :" + type.toString());
 					if (type == Message.Type.LOGIN_REPLY) {
 						Login_Reply reply = Login_Reply.read(is);
 						app.handle(reply);
@@ -87,17 +88,15 @@ public class Client implements Runnable {
 
 	}
 
-	public void setOutput(Message msg) {
-//		synchronized (output) {
+	public void send(Message msg) {
 		output.add(msg);
-//		}
 	}
 
 	void writeMessage(Message msg) {
 
 		try {
 			msg.write(os);
-			System.out.println("Message sent");
+			System.out.println("Sent :" + msg.toString());
 
 		} catch (IOException e) {
 			

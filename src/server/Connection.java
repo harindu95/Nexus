@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import core.ChatMessage;
 import core.CreateGame_Request;
@@ -19,9 +20,9 @@ public class Connection extends Thread {
 
 	InputStream is;
 	OutputStream os;
-	Message output = null;
 	Application app;
 	Socket socket;
+	private ConcurrentLinkedQueue<Message> output;
 
 	public Connection(Socket socket) throws IOException {
 		this.socket = socket;
@@ -30,52 +31,51 @@ public class Connection extends Thread {
 		os = socket.getOutputStream();
 		System.out.println("Connection established");
 		app = new Application(this);
+		output = new ConcurrentLinkedQueue<Message>();
 	}
 
 	public void run() {
 
 		while (true) {
-			if (output == null) {
+			if (output.size() > 0) {
+				synchronized (output) {
+					writeMessage(output.remove());
+				}
+			} else {
 				byte[] header = new byte[2];
 				try {
 					int length = is.read(header);
 					if (length < 0) {
 						// Connection offline
+						//TODO: Disconnected 
 						break;
 					}
 					int size = header[0];
 					byte t = header[1];
-					if(t >= Message.Type.values().length)
+					if (t >= Message.Type.values().length)
 						continue;
 					Message.Type type = Message.Type.values()[t];
-					System.out.println("Reading message");
+					System.out.println("Reading message :" + type.toString());
 					if (type == Message.Type.LOGIN_REQUEST) {
 						Login_Request req = Login_Request.read(is);
-						System.out.println("Username : " + req.getUserName());
 						app.handle(req);
-					}else if(type == Message.Type.ONLINEUSERS_REQUEST) {
+					} else if (type == Message.Type.ONLINEUSERS_REQUEST) {
 						OnlineUsers_Request req = new OnlineUsers_Request();
-						System.out.println("Reading ONLINEUSERS_REQUEST");
 						app.handle(req);
-					}else if(type == Message.Type.CREATEGAME_REQUEST) {
+					} else if (type == Message.Type.CREATEGAME_REQUEST) {
 						CreateGame_Request req = CreateGame_Request.read(is);
-						System.out.println("Reading CREATEGAME_REQUEST");
 						app.handle(req);
-					}else if(type == Message.Type.VIEWGAMES_REQUEST) {
+					} else if (type == Message.Type.VIEWGAMES_REQUEST) {
 						ViewGames_Request req = new ViewGames_Request();
-						System.out.println("Reading VIEWGAMES_REQUEST");
 						app.handle(req);
-					}else if(type == Message.Type.JOINGAME_REQUEST) {
+					} else if (type == Message.Type.JOINGAME_REQUEST) {
 						JoinGame_Request req = JoinGame_Request.read(is);
-						System.out.println("Reading JOINGAME_REQUEST");
 						app.handle(req);
-					}else if(type == Message.Type.CHATMESSAGE) {
+					} else if (type == Message.Type.CHATMESSAGE) {
 						ChatMessage msg = ChatMessage.read(is);
-						System.out.println("Reading CHATMESSAGE");
 						app.handle(msg);
-					}else if(type == Message.Type.LOGOUT_REQUEST) {
+					} else if (type == Message.Type.LOGOUT_REQUEST) {
 						Logout_Request req = Logout_Request.read(is);
-						System.out.println("Reading LOGOUT_REQUEST");
 						app.handle(req);
 					}
 				} catch (SocketTimeoutException e) {
@@ -83,15 +83,10 @@ public class Connection extends Thread {
 //					System.out.println("Socket timeout");
 				} catch (IOException e) {
 
-					
 					e.printStackTrace();
 					break;
 				}
 
-			} else {
-				synchronized (output) {
-					writeMessage(output);
-				}
 			}
 		}
 
@@ -101,11 +96,9 @@ public class Connection extends Thread {
 
 		try {
 			msg.write(os);
-			System.out.println("Message sent");
+			System.out.println("Sent :" + msg.toString());
 		} catch (IOException e) {
-		
 			e.printStackTrace();
-
 		}
 	}
 }

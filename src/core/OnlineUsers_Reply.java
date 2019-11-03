@@ -6,16 +6,19 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OnlineUsers_Reply implements Message{
+import core.Message.Type;
 
-	Message.Type type = Message.Type.ONLINEUSERS_REPLY;
+public class OnlineUsers_Reply extends Message{
+
 	List<User> online;
 	
 	private OnlineUsers_Reply() {
+		super(Type.ONLINEUSERS_REPLY);
 		this.online = new ArrayList<>();
 	}
 	
 	public OnlineUsers_Reply(List<User> online){
+		super(Type.ONLINEUSERS_REPLY);
 		this.online = online;
 	}
 
@@ -23,7 +26,6 @@ public class OnlineUsers_Reply implements Message{
 	public void write(OutputStream os) throws IOException {
 		byte size = (byte) (16 * online.size());
 		os.write(size);
-		byte type = (byte) this.type.ordinal();
 		os.write(type);
 		byte numUsers = (byte) online.size();
 		os.write(numUsers);

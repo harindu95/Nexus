@@ -4,17 +4,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class ChatMessage implements Message{
+public class ChatMessage extends Message{
 	byte[] username = new byte[16];
 	byte gameId = 0;
 	byte[] message = new byte[200];
-	byte type = (byte)Message.Type.CHATMESSAGE.ordinal();
-	
-	private ChatMessage() {
 		
+	private ChatMessage() {
+		super(Type.CHATMESSAGE);
 	}
 	
 	public ChatMessage(String txt, int gameId, String username) {
+		super(Type.CHATMESSAGE);
 		Util.strncpy(this.username, username);
 		Util.strncpy(message, txt);
 		this.gameId = (byte) gameId;

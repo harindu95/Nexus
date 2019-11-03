@@ -4,17 +4,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class JoinGame_Request implements Message {
+import core.Message.Type;
+
+public class JoinGame_Request extends Message {
 
 	byte gameId;
 	byte[] username = new byte[30];
-	byte type = (byte) Type.JOINGAME_REQUEST.ordinal();
 
 	private JoinGame_Request() {
-		
+		super(Type.JOINGAME_REQUEST);
 	}
 	
 	public JoinGame_Request(String username, int gameId) {
+		super(Type.JOINGAME_REQUEST);
 		this.gameId = (byte) gameId;
 		Util.strncpy(this.username, username);
 	}

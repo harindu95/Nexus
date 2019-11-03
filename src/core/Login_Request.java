@@ -4,24 +4,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class Login_Request implements Message{
+public class Login_Request extends Message{
 
 	byte[] username = new byte[16];
 	byte[] password = new byte[25];
-	byte type = (byte) Message.Type.LOGIN_REQUEST.ordinal();
+		
 	
 	private Login_Request() {
-		
+		super(Type.LOGIN_REQUEST);
 	}
 	
 	public Login_Request(String username, String password){
+		super(Type.LOGIN_REQUEST);
 		Util.strncpy(this.username,username );
 		Util.strncpy(this.password,password);
 	}
 	
 	public void write(OutputStream os) throws IOException{
-		int size = 43;
-		byte[] payload = { 43, type};
+		byte size = 43;
+		byte[] payload = { size, type};
 		os.write(payload);
 		os.write(username);
 		os.write(password);
