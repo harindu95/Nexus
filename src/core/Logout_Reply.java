@@ -1,5 +1,7 @@
 package core;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,14 +19,14 @@ public class Logout_Reply extends Message {
 	}
 
 	@Override
-	public void write(OutputStream os) throws IOException {
+	public void write(ByteArrayOutputStream os) throws IOException {
 		byte size = USERNAME_SIZE;
 		byte[] header = { size, type };
 		os.write(header);
 		os.write(username);
 	}
 
-	public static Logout_Reply read(InputStream is) throws IOException {
+	public static Logout_Reply read(ByteArrayInputStream is) throws IOException {
 		Logout_Reply req = new Logout_Reply();
 		is.read(req.username);
 		return req;

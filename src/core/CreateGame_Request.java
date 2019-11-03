@@ -1,10 +1,8 @@
 package core;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import core.Message.Type;
 
 public class CreateGame_Request extends Message {
 
@@ -30,7 +28,7 @@ public class CreateGame_Request extends Message {
 	}
 
 	@Override
-	public void write(OutputStream os) throws IOException {
+	public void write(ByteArrayOutputStream os) throws IOException {
 		byte size = GAMENAME_SIZE + USERNAME_SIZE + MAXPLAYERS_SIZE;
 		byte[] payload = {size, type};
 		os.write(payload);
@@ -42,7 +40,7 @@ public class CreateGame_Request extends Message {
 	}
 	
 
-	public static CreateGame_Request read(InputStream is) throws IOException {
+	public static CreateGame_Request read(ByteArrayInputStream is) throws IOException {
 		CreateGame_Request req = new CreateGame_Request();
 		is.read(req.username);
 		is.read(req.gamename);

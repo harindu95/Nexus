@@ -1,5 +1,7 @@
 package core;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,7 +23,7 @@ public class ChatMessage extends Message{
 	}
 	
 	@Override
-	public void write(OutputStream os) throws IOException {
+	public void write(ByteArrayOutputStream os) throws IOException {
 		byte size = (byte) (GAMEID_SIZE + USERNAME_SIZE +CHATMESSAGE_SIZE);
 		byte[] header = {size, type, gameId};
 		os.write(header);
@@ -30,7 +32,7 @@ public class ChatMessage extends Message{
 		
 	}
 	
-	public static ChatMessage read(InputStream is) throws IOException {
+	public static ChatMessage read(ByteArrayInputStream is) throws IOException {
 		ChatMessage msg = new ChatMessage();
 		byte[] header = new byte[GAMEID_SIZE];
 		is.read(header);

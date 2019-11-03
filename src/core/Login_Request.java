@@ -1,5 +1,7 @@
 package core;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,7 +22,7 @@ public class Login_Request extends Message{
 		Util.strncpy(this.password,password);
 	}
 	
-	public void write(OutputStream os) throws IOException{
+	public void write(ByteArrayOutputStream os) throws IOException{
 		byte size = USERNAME_SIZE+ PASSWORD_SIZE;
 		byte[] payload = { size, type};
 		os.write(payload);
@@ -28,7 +30,7 @@ public class Login_Request extends Message{
 		os.write(password);
 	}
 	
-	public static Login_Request read(InputStream is) throws IOException {
+	public static Login_Request read(ByteArrayInputStream is) throws IOException {
 		Login_Request req = new Login_Request();
 		is.read(req.username);
 		is.read(req.password);

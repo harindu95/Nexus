@@ -1,5 +1,6 @@
 package core;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -13,7 +14,7 @@ public class OnlineUsers_Request extends Message {
 	}
 	
 	@Override
-	public void write(OutputStream os) throws IOException {
+	public void write(ByteArrayOutputStream os) throws IOException {
 		byte size = 0;
 		byte[] payload = {size, type};
 		os.write(payload);

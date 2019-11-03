@@ -1,5 +1,7 @@
 package core;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -22,7 +24,7 @@ public class JoinGame_Reply extends Message {
 	}
 
 	@Override
-	public void write(OutputStream os) throws IOException {
+	public void write(ByteArrayOutputStream os) throws IOException {
 		byte gameId = (byte)game.id;
 		byte max = (byte)game.maxPlayers;
 		byte numPlayers = (byte)game.users.size();
@@ -42,7 +44,7 @@ public class JoinGame_Reply extends Message {
 		
 	}
 	
-	public static JoinGame_Reply read(InputStream is) throws IOException{
+	public static JoinGame_Reply read(ByteArrayInputStream is) throws IOException{
 		JoinGame_Reply reply = new JoinGame_Reply();
 		byte[] status = new byte[STATUS];
 		is.read(status);

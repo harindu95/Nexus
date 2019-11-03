@@ -1,12 +1,11 @@
 package core;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import core.Message.Type;
 
 public class OnlineUsers_Reply extends Message{
 
@@ -23,7 +22,7 @@ public class OnlineUsers_Reply extends Message{
 	}
 
 	@Override
-	public void write(OutputStream os) throws IOException {
+	public void write(ByteArrayOutputStream os) throws IOException {
 		byte size = (byte) (USERNAME_SIZE * online.size());
 		os.write(size);
 		os.write(type);
@@ -36,7 +35,7 @@ public class OnlineUsers_Reply extends Message{
 		System.out.println("Message sent : OnlineUsers_Reply");
 	}
 	
-	public static OnlineUsers_Reply read(InputStream is) throws IOException {
+	public static OnlineUsers_Reply read(ByteArrayInputStream is) throws IOException {
 		byte numUsers = (byte)is.read();
 		byte[] username = new byte[USERNAME_SIZE];
 		OnlineUsers_Reply reply = new OnlineUsers_Reply();

@@ -1,5 +1,7 @@
 package server;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -48,7 +50,7 @@ public class Connection extends Thread {
 					int length = is.read(header);
 					if (length < 0) {
 						// Connection offline
-						//TODO: Disconnected 
+						// TODO: Disconnected
 						break;
 					}
 					int size = header[0];
@@ -57,30 +59,32 @@ public class Connection extends Thread {
 						continue;
 					Message.Type type = Message.Type.values()[t];
 					System.out.println("Reading message :" + type.toString());
-					if (type == Message.Type.LOGIN_REQUEST) {
-						Login_Request req = Login_Request.read(is);
-						app.handle(req);
-					} else if (type == Message.Type.ONLINEUSERS_REQUEST) {
-						OnlineUsers_Request req = new OnlineUsers_Request();
-						app.handle(req);
-					} else if (type == Message.Type.CREATEGAME_REQUEST) {
-						CreateGame_Request req = CreateGame_Request.read(is);
-						app.handle(req);
-					} else if (type == Message.Type.VIEWGAMES_REQUEST) {
-						ViewGames_Request req = new ViewGames_Request();
-						app.handle(req);
-					} else if (type == Message.Type.JOINGAME_REQUEST) {
-						JoinGame_Request req = JoinGame_Request.read(is);
-						app.handle(req);
-					} else if (type == Message.Type.CHATMESSAGE) {
-						ChatMessage msg = ChatMessage.read(is);
+					byte[] payload = new byte[size];
+					int read = is.read(payload);
+					if (read != size) {
+						// BUG
+						System.err.println("BUG: Size mismatch");
+					} else {
+						Message msg = null;
+						ByteArrayInputStream buf = new ByteArrayInputStream(payload);
+						if (type == Message.Type.LOGIN_REQUEST) {
+							msg = Login_Request.read(buf);
+						} else if (type == Message.Type.ONLINEUSERS_REQUEST) {
+							msg = new OnlineUsers_Request();
+						} else if (type == Message.Type.CREATEGAME_REQUEST) {
+							msg = CreateGame_Request.read(buf);
+						} else if (type == Message.Type.VIEWGAMES_REQUEST) {
+							 msg = new ViewGames_Request();
+						} else if (type == Message.Type.JOINGAME_REQUEST) {
+							 msg = JoinGame_Request.read(buf);
+						} else if (type == Message.Type.CHATMESSAGE) {
+							 msg = ChatMessage.read(buf);
+						} else if (type == Message.Type.LOGOUT_REQUEST) {
+							 msg = Logout_Request.read(buf);
+						} else if (type == Message.Type.RECONNECT_REQUEST) {
+							 msg = Reconnect_Request.read(buf);
+						}
 						app.handle(msg);
-					} else if (type == Message.Type.LOGOUT_REQUEST) {
-						Logout_Request req = Logout_Request.read(is);
-						app.handle(req);
-					} else if(type == Message.Type.RECONNECT_REQUEST) {
-						Reconnect_Request req = Reconnect_Request.read(is);
-						app.handle(req);
 					}
 				} catch (SocketTimeoutException e) {
 
@@ -99,11 +103,13 @@ public class Connection extends Thread {
 	public void send(Message msg) {
 		output.add(msg);
 	}
-	
+
 	void writeMessage(Message msg) {
 
 		try {
-			msg.write(os);
+			ByteArrayOutputStream buf = new ByteArrayOutputStream();
+			msg.write(buf);
+			os.write(buf.toByteArray());
 			System.out.println("Sent :" + msg.toString());
 		} catch (IOException e) {
 			e.printStackTrace();

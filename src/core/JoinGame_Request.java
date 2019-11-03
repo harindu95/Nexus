@@ -1,10 +1,8 @@
 package core;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import core.Message.Type;
 
 public class JoinGame_Request extends Message {
 
@@ -21,14 +19,14 @@ public class JoinGame_Request extends Message {
 		Util.strncpy(this.username, username);
 	}
 
-	public void write(OutputStream os) throws IOException {
+	public void write(ByteArrayOutputStream os) throws IOException {
 		byte size = USERNAME_SIZE + GAMEID_SIZE;
 		byte[] header = { size, type, gameId };
 		os.write(header);
 		os.write(username);
 	}
 	
-	public static JoinGame_Request read(InputStream is) throws IOException {
+	public static JoinGame_Request read(ByteArrayInputStream is) throws IOException {
 		JoinGame_Request req = new JoinGame_Request();
 		byte[] header = new byte[GAMEID_SIZE];
 		is.read(header);

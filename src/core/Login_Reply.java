@@ -1,10 +1,8 @@
 package core;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import core.Message.Type;
 
 public class Login_Reply extends Message {
 
@@ -80,7 +78,7 @@ public class Login_Reply extends Message {
 		}
 	}
 
-	public void write(OutputStream os) throws IOException {
+	public void write(ByteArrayOutputStream os) throws IOException {
 		byte size = STATUS + USERNAME_SIZE + PASSWORD_SIZE + TOTALGAMES_SIZE + WINS_SIZE;
 		byte[] payload = { size, type, status };
 		os.write(payload);
@@ -90,7 +88,7 @@ public class Login_Reply extends Message {
 		os.write(p);
 	}
 
-	public static Login_Reply read(InputStream is) throws IOException {
+	public static Login_Reply read(ByteArrayInputStream is) throws IOException {
 		Login_Reply reply = new Login_Reply();
 		byte[] status = new byte[STATUS];
 		is.read(status);

@@ -1,5 +1,6 @@
 package core;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -35,7 +36,7 @@ public abstract class Message {
 		type = (byte) t.ordinal();
 	}
 	
-	public abstract void write(OutputStream os) throws IOException;
+	public abstract void write(ByteArrayOutputStream os) throws IOException;
 	
 	public String toString() {
 		Type t = Type.values()[type];

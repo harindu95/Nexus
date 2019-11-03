@@ -1,5 +1,7 @@
 package core;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,7 +36,7 @@ public class ViewGames_Reply extends Message{
 	}
 	
 	@Override
-	public void write(OutputStream os) throws IOException {
+	public void write(ByteArrayOutputStream os) throws IOException {
 		byte numGames = (byte) games.size();
 		byte size = (byte) (numGames * (GAMENAME_SIZE + GAMEID_SIZE + MAXPLAYERS_SIZE) + STATUS + NUMGAMES_SIZE);
 		byte[] header = {size, type, status, numGames};
@@ -52,7 +54,7 @@ public class ViewGames_Reply extends Message{
 	}
 	
 	
-	public static ViewGames_Reply read(InputStream is) throws IOException{
+	public static ViewGames_Reply read(ByteArrayInputStream is) throws IOException{
 		ViewGames_Reply reply = new ViewGames_Reply();
 		byte[] header = new byte[2];
 		is.read(header);

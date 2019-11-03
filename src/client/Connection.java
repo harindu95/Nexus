@@ -1,5 +1,7 @@
 package client;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -48,32 +50,35 @@ public class Connection implements Runnable {
 					}
 					int size = header[0];
 					byte t = header[1];
-					if (t >= Message.Type.values().length)
+					if (t >= Message.Type.values().length ||  t < 0)
 						continue;
 					Message.Type type = Message.Type.values()[t];
 					System.out.println("Reading message :" + type.toString());
-					if (type == Message.Type.LOGIN_REPLY) {
-						Login_Reply reply = Login_Reply.read(is);
-						app.handle(reply);
-					} else if (type == Message.Type.ONLINEUSERS_REPLY) {
-						OnlineUsers_Reply reply = OnlineUsers_Reply.read(is);
-						app.handle(reply);
-					} else if (type == Message.Type.VIEWGAMES_REPLY) {
-						ViewGames_Reply reply = ViewGames_Reply.read(is);
-						app.handle(reply);
-					} else if (type == Message.Type.JOINGAME_REPLY) {
-						System.out.println("JOINGAME_REPLY");
-						JoinGame_Reply reply = JoinGame_Reply.read(is);
-						app.handle(reply);
-					} else if (type == Message.Type.CHATMESSAGE) {
-						ChatMessage msg = ChatMessage.read(is);
+					byte[] payload = new byte[size];
+					int read = is.read(payload);
+					if (read != size) {
+						// BUG
+						System.err.println("BUG: Size mismatch");
+					} else {
+						Message msg = null;
+						ByteArrayInputStream buf = new ByteArrayInputStream(payload);
+						if (type == Message.Type.LOGIN_REPLY) {
+							msg = Login_Reply.read(buf);
+						} else if (type == Message.Type.ONLINEUSERS_REPLY) {
+							msg = OnlineUsers_Reply.read(buf);
+						} else if (type == Message.Type.VIEWGAMES_REPLY) {
+							msg = ViewGames_Reply.read(buf);
+						} else if (type == Message.Type.JOINGAME_REPLY) {
+							msg = JoinGame_Reply.read(buf);
+						} else if (type == Message.Type.CHATMESSAGE) {
+							msg = ChatMessage.read(buf);
+						} else if (type == Message.Type.LOGOUT_REPLY) {
+							msg = Logout_Reply.read(buf);
+						} else if (type == Message.Type.RECONNECT_REPLY) {
+							msg = Reconnect_Reply.read(buf);
+						}
+
 						app.handle(msg);
-					} else if (type == Message.Type.LOGOUT_REPLY) {
-						Logout_Reply reply = Logout_Reply.read(is);
-						app.handle(reply);
-					}else if(type == Message.Type.RECONNECT_REPLY) {
-						Reconnect_Reply reply = Reconnect_Reply.read(is);
-						app.handle(reply);
 					}
 
 				} catch (SocketTimeoutException e) {
@@ -97,7 +102,9 @@ public class Connection implements Runnable {
 	void writeMessage(Message msg) {
 
 		try {
-			msg.write(os);
+			ByteArrayOutputStream buf = new ByteArrayOutputStream();
+			msg.write(buf);
+			os.write(buf.toByteArray());
 			System.out.println("Sent :" + msg.toString());
 
 		} catch (IOException e) {
@@ -119,7 +126,7 @@ public class Connection implements Runnable {
 		output = new ConcurrentLinkedQueue<Message>();
 
 	}
-	
+
 	public void reset() throws IOException {
 		init();
 	}

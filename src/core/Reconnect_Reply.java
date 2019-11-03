@@ -1,5 +1,7 @@
 package core;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,7 +21,7 @@ public class Reconnect_Reply extends Message {
 	}
 
 	@Override
-	public void write(OutputStream os) throws IOException {
+	public void write(ByteArrayOutputStream os) throws IOException {
 		byte size = USERNAME_SIZE;
 		byte[] header = { size, type };
 		os.write(header);
@@ -27,7 +29,7 @@ public class Reconnect_Reply extends Message {
 
 	}
 
-	public static Reconnect_Reply read(InputStream is) throws IOException {
+	public static Reconnect_Reply read(ByteArrayInputStream is) throws IOException {
 		Reconnect_Reply req = new Reconnect_Reply();
 		is.read(req.username);
 		return req;

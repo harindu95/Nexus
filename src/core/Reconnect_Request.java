@@ -1,5 +1,7 @@
 package core;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,7 +22,7 @@ public class Reconnect_Request extends Message{
 	}
 
 	@Override
-	public void write(OutputStream os) throws IOException {
+	public void write(ByteArrayOutputStream os) throws IOException {
 		byte size = USERNAME_SIZE + PASSWORD_SIZE;
 		byte[] header = {size,type};
 		os.write(header);
@@ -28,7 +30,7 @@ public class Reconnect_Request extends Message{
 		os.write(password);
 	}
 	
-	public static Reconnect_Request read(InputStream is) throws IOException{
+	public static Reconnect_Request read(ByteArrayInputStream is) throws IOException{
 		Reconnect_Request req = new Reconnect_Request();
 		is.read(req.username);
 		is.read(req.password);
