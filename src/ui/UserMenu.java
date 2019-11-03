@@ -55,4 +55,11 @@ public class UserMenu extends Base{
 		viewGames.start(stage);
 			
 	}
+	
+	@FXML
+	void handleNetworkStatus(ActionEvent e) {
+		
+		app.showNetworkStatus();
+		
+	}
 }

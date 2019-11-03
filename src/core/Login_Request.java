@@ -23,9 +23,7 @@ public class Login_Request extends Message{
 	}
 	
 	public void write(ByteArrayOutputStream os) throws IOException{
-		byte size = USERNAME_SIZE+ PASSWORD_SIZE;
-		byte[] payload = { size, type};
-		os.write(payload);
+		
 		os.write(username);
 		os.write(password);
 	}

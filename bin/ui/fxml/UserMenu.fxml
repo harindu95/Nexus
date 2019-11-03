@@ -54,7 +54,7 @@
                         <Insets bottom="10.0" top="10.0" />
                      </VBox.margin>
                   </Button>
-                  <Button maxHeight="250.0" minWidth="150.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #023a41; -fx-opacity: 85%;" text="Network Status" textFill="WHITE">
+                  <Button maxHeight="250.0" minWidth="150.0" mnemonicParsing="false" onAction="#handleNetworkStatus" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #023a41; -fx-opacity: 85%;" text="Network Status" textFill="WHITE">
                      <font>
                         <Font name="Arial Bold" size="17.0" />
                      </font>

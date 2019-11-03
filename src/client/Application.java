@@ -3,6 +3,8 @@ package client;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import core.ChatMessage;
 import core.CreateGame_Request;
@@ -26,6 +28,7 @@ import javafx.stage.Stage;
 import ui.GameLobby;
 import ui.ListPlayers;
 import ui.Main;
+import ui.NetworkStatus;
 import ui.UserMenu;
 import ui.ViewGames;
 
@@ -37,14 +40,19 @@ public class Application {
 	GameRoom currentGame;
 	Stage mainStage;
 	GameLobby lobby;
+	NetworkStatus networkStatus;
 	private ViewGames viewGames;
 	private UserMenu userMenu;
 	int retries = 0;
-
+	Timer networkTimer;
+	
+	
 	public Application() throws UnknownHostException, IOException {
 		con = new Connection(this);
 		Thread t = new Thread(con);
 		t.start();
+		networkStatus = new NetworkStatus(this);
+			
 	}
 
 	public void handle(Message msg) {
@@ -168,6 +176,22 @@ public class Application {
 				userMenu.start(window);
 			}
 		});
+		
+		networkTimer = new Timer();
+		TimerTask timerTask = new TimerTask() {
+			
+			
+			@Override
+			public void run() {
+				int sent = con.getSentBytes();
+				int recv = con.getRecvBytes();
+				networkStatus.update(sent, recv);
+				
+			}
+		};
+		
+		networkTimer.scheduleAtFixedRate(timerTask, 0l, 1000l);
+		
 
 	}
 
@@ -258,6 +282,12 @@ public class Application {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+	}
+
+	public void showNetworkStatus() {
+		
+		networkStatus.start(mainStage);
 		
 	}
 }

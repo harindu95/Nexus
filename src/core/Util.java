@@ -29,4 +29,8 @@ public class Util {
 		}
 		return buf.toString();
 	}
+	
+	 public static int unsignedToBytes(byte b) {
+		    return b & 0xFF;
+	 }
 }

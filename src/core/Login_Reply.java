@@ -79,8 +79,8 @@ public class Login_Reply extends Message {
 	}
 
 	public void write(ByteArrayOutputStream os) throws IOException {
-		byte size = STATUS + USERNAME_SIZE + PASSWORD_SIZE + TOTALGAMES_SIZE + WINS_SIZE;
-		byte[] payload = { size, type, status };
+		
+		byte[] payload = { status };
 		os.write(payload);
 		os.write(username);
 		os.write(password);

@@ -28,9 +28,8 @@ public class JoinGame_Reply extends Message {
 		byte gameId = (byte)game.id;
 		byte max = (byte)game.maxPlayers;
 		byte numPlayers = (byte)game.users.size();
-		byte size = (byte) (GAMENAME_SIZE + USERNAME_SIZE * numPlayers + GAMEID_SIZE + MAXPLAYERS_SIZE + STATUS);
-		byte[] header = { size, type, status};
-		os.write(header);
+		
+		os.write(status);
 		byte[] gameName = Util.strByteArray(game.getName(), GAMENAME_SIZE);
 		os.write(gameName);
 		byte[] payload = {gameId, max, numPlayers};
@@ -42,12 +41,12 @@ public class JoinGame_Reply extends Message {
 			os.write(username);
 		}
 		
+		
 	}
 	
 	public static JoinGame_Reply read(ByteArrayInputStream is) throws IOException{
 		JoinGame_Reply reply = new JoinGame_Reply();
-		byte[] status = new byte[STATUS];
-		is.read(status);
+		reply.status = (byte)is.read();
 		byte[] gameName = new byte[GAMENAME_SIZE];
 		is.read(gameName);
 		byte[] header = new byte[3];

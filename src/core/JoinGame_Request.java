@@ -20,10 +20,10 @@ public class JoinGame_Request extends Message {
 	}
 
 	public void write(ByteArrayOutputStream os) throws IOException {
-		byte size = USERNAME_SIZE + GAMEID_SIZE;
-		byte[] header = { size, type, gameId };
+		byte[] header = {  gameId };
 		os.write(header);
 		os.write(username);
+	
 	}
 	
 	public static JoinGame_Request read(ByteArrayInputStream is) throws IOException {
@@ -34,7 +34,7 @@ public class JoinGame_Request extends Message {
 		is.read(req.username);
 		return req;
 	}
-	
+		
 	public String getUsername() {
 		return  Util.toString(username);
 	}

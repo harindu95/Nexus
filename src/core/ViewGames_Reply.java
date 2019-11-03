@@ -38,8 +38,7 @@ public class ViewGames_Reply extends Message{
 	@Override
 	public void write(ByteArrayOutputStream os) throws IOException {
 		byte numGames = (byte) games.size();
-		byte size = (byte) (numGames * (GAMENAME_SIZE + GAMEID_SIZE + MAXPLAYERS_SIZE) + STATUS + NUMGAMES_SIZE);
-		byte[] header = {size, type, status, numGames};
+		byte[] header = {status, numGames};
 		os.write(header);
 		for(GameRoom g: games) {
 			byte id = (byte) g.id;

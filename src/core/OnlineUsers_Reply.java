@@ -23,16 +23,14 @@ public class OnlineUsers_Reply extends Message{
 
 	@Override
 	public void write(ByteArrayOutputStream os) throws IOException {
-		byte size = (byte) (USERNAME_SIZE * online.size());
-		os.write(size);
-		os.write(type);
+		
 		byte numUsers = (byte) online.size();
 		os.write(numUsers);
 		for(int i=0;i<numUsers;i++) {
 			User u = online.get(i);
 			os.write(Util.strByteArray(u.getUsername(),16));
 		}
-		System.out.println("Message sent : OnlineUsers_Reply");
+	
 	}
 	
 	public static OnlineUsers_Reply read(ByteArrayInputStream is) throws IOException {

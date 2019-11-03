@@ -15,10 +15,8 @@ public class OnlineUsers_Request extends Message {
 	
 	@Override
 	public void write(ByteArrayOutputStream os) throws IOException {
-		byte size = 0;
-		byte[] payload = {size, type};
-		os.write(payload);
-		System.out.println("Message sent : OnlineUsers_Request");
+	
+		
 	}
 
 }

@@ -18,6 +18,7 @@ import core.Logout_Reply;
 import core.Message;
 import core.OnlineUsers_Reply;
 import core.Reconnect_Reply;
+import core.Util;
 import core.ViewGames_Reply;
 
 public class Connection implements Runnable {
@@ -26,6 +27,8 @@ public class Connection implements Runnable {
 	OutputStream os;
 	public Queue<Message> output = null;
 	Application app;
+	private int sentBytes;
+	private int recvBytes;
 
 	public Connection(Application app) throws UnknownHostException, IOException {
 		this.app = app;
@@ -48,14 +51,17 @@ public class Connection implements Runnable {
 							app.reconnect();
 						}
 					}
-					int size = header[0];
+					int size = Util.unsignedToBytes(header[0]);
 					byte t = header[1];
-					if (t >= Message.Type.values().length ||  t < 0)
+					if (t >= Message.Type.values().length || t <= 0 || size < 0) {
+						System.err.println("Invalid header !!" + "  " + size + "Bytes | " + t + " Type");
 						continue;
+					}
 					Message.Type type = Message.Type.values()[t];
-					System.out.println("Reading message :" + type.toString());
+					System.out.println("Reading message :" + type.toString() + " | " + size + " Bytes");
 					byte[] payload = new byte[size];
 					int read = is.read(payload);
+					recvBytes += read;
 					if (read != size) {
 						// BUG
 						System.err.println("BUG: Size mismatch");
@@ -104,8 +110,13 @@ public class Connection implements Runnable {
 		try {
 			ByteArrayOutputStream buf = new ByteArrayOutputStream();
 			msg.write(buf);
+			byte size = (byte) buf.size();
+			byte type = msg.getType();
+			byte[] header = { size, type };
+			os.write(header);
 			os.write(buf.toByteArray());
-			System.out.println("Sent :" + msg.toString());
+			sentBytes += buf.size();
+			System.out.println("Sent :" + msg.toString() + " | " + buf.size() + " Bytes");
 
 		} catch (IOException e) {
 
@@ -129,5 +140,17 @@ public class Connection implements Runnable {
 
 	public void reset() throws IOException {
 		init();
+	}
+
+	public int getSentBytes() {
+		int t = sentBytes;
+		sentBytes = 0;
+		return t;
+	}
+
+	public int getRecvBytes() {
+		int t = recvBytes;
+		recvBytes = 0;
+		return t;
 	}
 }

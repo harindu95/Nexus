@@ -24,19 +24,16 @@ public class ChatMessage extends Message{
 	
 	@Override
 	public void write(ByteArrayOutputStream os) throws IOException {
-		byte size = (byte) (GAMEID_SIZE + USERNAME_SIZE +CHATMESSAGE_SIZE);
-		byte[] header = {size, type, gameId};
-		os.write(header);
+		
+		os.write(gameId);
 		os.write(username);
 		os.write(message);
-		
+	
 	}
 	
 	public static ChatMessage read(ByteArrayInputStream is) throws IOException {
 		ChatMessage msg = new ChatMessage();
-		byte[] header = new byte[GAMEID_SIZE];
-		is.read(header);
-		msg.gameId = header[0];
+		msg.gameId = (byte)is.read();
 		is.read(msg.username);
 		is.read(msg.message);
 		return msg;

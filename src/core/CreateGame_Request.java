@@ -29,9 +29,6 @@ public class CreateGame_Request extends Message {
 
 	@Override
 	public void write(ByteArrayOutputStream os) throws IOException {
-		byte size = GAMENAME_SIZE + USERNAME_SIZE + MAXPLAYERS_SIZE;
-		byte[] payload = {size, type};
-		os.write(payload);
 		os.write(username);
 		os.write(gamename);
 		byte[] p = { max};

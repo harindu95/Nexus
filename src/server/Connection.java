@@ -17,6 +17,7 @@ import core.Logout_Request;
 import core.Message;
 import core.OnlineUsers_Request;
 import core.Reconnect_Request;
+import core.Util;
 import core.ViewGames_Request;
 
 public class Connection extends Thread {
@@ -26,6 +27,7 @@ public class Connection extends Thread {
 	Application app;
 	Socket socket;
 	private ConcurrentLinkedQueue<Message> output;
+	boolean socketLock = false;
 
 	public Connection(Socket socket) throws IOException {
 		this.socket = socket;
@@ -47,21 +49,28 @@ public class Connection extends Thread {
 			} else {
 				byte[] header = new byte[2];
 				try {
-					int length = is.read(header);
+					int length = 0;
+					synchronized (socket) {
+						length = is.read(header);
+					}
 					if (length < 0) {
 						// Connection offline
 						// TODO: Disconnected
 						break;
 					}
-					int size = header[0];
+					int size = Util.unsignedToBytes(header[0]);
 					byte t = header[1];
-					if (t >= Message.Type.values().length)
+					if (t >= Message.Type.values().length || t <= 0 || size < 0) {
+						System.err.println("Invalid header !!" +"  " + size + "Bytes | " +  t + " Type");
 						continue;
+					}
 					Message.Type type = Message.Type.values()[t];
-					System.out.println("Reading message :" + type.toString());
+					System.out.println("Reading message :" + type.toString() + " | " + size + " Bytes");
 					byte[] payload = new byte[size];
-					int read = is.read(payload);
-					if (read != size) {
+					synchronized (socket) {
+						length = is.read(payload);
+					}
+					if (length != size) {
 						// BUG
 						System.err.println("BUG: Size mismatch");
 					} else {
@@ -74,15 +83,15 @@ public class Connection extends Thread {
 						} else if (type == Message.Type.CREATEGAME_REQUEST) {
 							msg = CreateGame_Request.read(buf);
 						} else if (type == Message.Type.VIEWGAMES_REQUEST) {
-							 msg = new ViewGames_Request();
+							msg = new ViewGames_Request();
 						} else if (type == Message.Type.JOINGAME_REQUEST) {
-							 msg = JoinGame_Request.read(buf);
+							msg = JoinGame_Request.read(buf);
 						} else if (type == Message.Type.CHATMESSAGE) {
-							 msg = ChatMessage.read(buf);
+							msg = ChatMessage.read(buf);
 						} else if (type == Message.Type.LOGOUT_REQUEST) {
-							 msg = Logout_Request.read(buf);
+							msg = Logout_Request.read(buf);
 						} else if (type == Message.Type.RECONNECT_REQUEST) {
-							 msg = Reconnect_Request.read(buf);
+							msg = Reconnect_Request.read(buf);
 						}
 						app.handle(msg);
 					}
@@ -109,8 +118,15 @@ public class Connection extends Thread {
 		try {
 			ByteArrayOutputStream buf = new ByteArrayOutputStream();
 			msg.write(buf);
-			os.write(buf.toByteArray());
-			System.out.println("Sent :" + msg.toString());
+			byte size = (byte) buf.size();
+			byte type = msg.getType();
+			byte[] header = { size, type };
+			synchronized (socket) {
+				os.write(header);
+				os.write(buf.toByteArray());
+			}
+
+			System.out.println("Sent :" + msg.toString() + " | " + buf.size() + " Bytes");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

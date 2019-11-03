@@ -22,9 +22,6 @@ public class Logout_Request extends Message{
 	
 	@Override
 	public void write(ByteArrayOutputStream os) throws IOException {
-		byte size = USERNAME_SIZE;
-		byte[] header = { size, type};
-		os.write(header);
 		os.write(username);		
 	}
 	
