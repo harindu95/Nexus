@@ -51,11 +51,11 @@ public class CreateGame_Request implements Message {
 	
 	
 	public String getUserName() {
-		return new String(username);
+		return Util.toString(username);
 	}
 	
 	public String getGameName() {
-		return new String(gamename);
+		return  Util.toString(gamename);
 	}
 	
 	public int getMax() {

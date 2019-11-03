@@ -4,12 +4,15 @@ import java.io.IOException;
 
 import client.Application;
 import core.Game;
+import core.User;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
 public class GameLobby {
@@ -23,10 +26,6 @@ public class GameLobby {
 	Label gameName_Label;
 	
 	
-	public void initialize() {
-		Game g = app.getCurrentGame();
-		gameName_Label.setText(g.getName());
-	}
 	
 	public void start(Stage window) {
 		Parent root;
@@ -51,6 +50,23 @@ public class GameLobby {
 	@FXML
 	public void onMenuBtn(ActionEvent e) {
 		app.showMainMenu();
+	}
+
+	@FXML
+	ListView<String> players_list;
+	
+	public void update(Game currentGame) {
+		Platform.runLater( new Runnable() {
+			
+			@Override
+			public void run() {
+				gameName_Label.setText(currentGame.getName());
+				for(User u: currentGame.getUsers()) {
+					players_list.getItems().add(u.getUsername());
+				}
+			}
+		});
+		
 	}
 
 }

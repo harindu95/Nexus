@@ -103,10 +103,10 @@ public class Login_Reply implements Message {
 	}
 
 	public String getUserName() {
-		return new String(username);
+		return  Util.toString(username);
 	}
 
 	public String getPassword() {
-		return new String(password);
+		return  Util.toString(password);
 	}
 }

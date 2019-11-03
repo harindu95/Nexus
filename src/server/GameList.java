@@ -31,4 +31,10 @@ public class GameList {
 		return games;
 		
 	}
+	
+	public Game joinGame(User player, int gameId) {
+		Game g = games.get(gameId);
+		g.join(player);
+		return g;
+	}
 }

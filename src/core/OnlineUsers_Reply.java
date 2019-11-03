@@ -40,7 +40,7 @@ public class OnlineUsers_Reply implements Message{
 		OnlineUsers_Reply reply = new OnlineUsers_Reply();
 		for(int i=0;i<numUsers;i++) {
 			is.read(username);
-			User u = new User(new String(username));
+			User u = new User( Util.toString(username));
 			reply.online.add(u);
 		}
 		return reply;

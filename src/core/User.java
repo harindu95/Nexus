@@ -2,30 +2,6 @@ package core;
 
 public class User {
 	private String username = "";
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public int getTotalGames() {
-		return totalGames;
-	}
-
-	public void setTotalGames(int totalGames) {
-		this.totalGames = totalGames;
-	}
-
-	public int getWins() {
-		return wins;
-	}
-
-	public void setWins(int wins) {
-		this.wins = wins;
-	}
-
 	private String password = "";
 	int totalGames = 0;
 	int wins = 0;
@@ -49,5 +25,28 @@ public class User {
 		this.password = password;
 	}
 	
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public int getTotalGames() {
+		return totalGames;
+	}
+
+	public void setTotalGames(int totalGames) {
+		this.totalGames = totalGames;
+	}
+
+	public int getWins() {
+		return wins;
+	}
+
+	public void setWins(int wins) {
+		this.wins = wins;
+	}
 	
 }

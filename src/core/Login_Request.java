@@ -35,10 +35,10 @@ public class Login_Request implements Message{
 	}
 	
 	public String getUserName() {
-		return new String(username);
+		return  Util.toString(username);
 	}
 	
 	public String getPassword() {
-		return new String(password);
+		return  Util.toString(password);
 	}
 }

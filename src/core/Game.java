@@ -1,14 +1,38 @@
 package core;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import java.util.Map;
 
 public class Game {
 	String name;
+
+	Map<String, User> users = new HashMap<>();
+	User creator;
+	int maxPlayers = 1;
+	int id = 0;
+
+	public Game(User creator, String name, int max) {
+		this.creator = creator;
+		this.name = name;
+		maxPlayers = max;
+		join(creator);
+	}
+
+	public Game(String name, int max) {
+		this.name = name;
+		maxPlayers = max;
+	}
+
+	public void join(User player) {
+		users.put(player.getUsername(), player);
+	}
+	
+	public void setGameId(int id) {
+		this.id = id;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -18,11 +42,7 @@ public class Game {
 	}
 
 	public List<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(List<User> users) {
-		this.users = users;
+		return new ArrayList<>(users.values());
 	}
 
 	public User getCreator() {
@@ -48,37 +68,4 @@ public class Game {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	List<User> users;
-	User creator;
-	int maxPlayers = 1;
-	int id = 0;
-	
-	public Game(User creator, String name, int max) {
-		this.creator = creator;
-		this.name = name;
-		maxPlayers = max;
-	}
-	
-	public Game(String name, int max) {
-		this.name = name;
-		maxPlayers = max;
-	}
-	
-	public void setGameId(int id) {
-		this.id = id;
-	}
-	
-//	public StringProperty nameProperty() {
-//		return new SimpleStringProperty(name);
-//	}
-//	
-//	public IntegerProperty idProperty() {
-//		return new SimpleIntegerProperty(id);
-//	}
-//	
-//	public IntegerProperty maxProperty() {
-//		return new SimpleIntegerProperty(maxPlayers);
-//	}
 }
-

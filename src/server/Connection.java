@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 import core.CreateGame_Request;
+import core.JoinGame_Request;
 import core.Login_Request;
 import core.Message;
 import core.OnlineUsers_Request;
@@ -61,6 +62,10 @@ public class Connection extends Thread {
 					}else if(type == Message.Type.VIEWGAMES_REQUEST) {
 						ViewGames_Request req = new ViewGames_Request();
 						System.out.println("Reading VIEWGAMES_REQUEST");
+						app.handle(req);
+					}else if(type == Message.Type.JOINGAME_REQUEST) {
+						JoinGame_Request req = JoinGame_Request.read(is);
+						System.out.println("Reading JOINGAME_REQUEST");
 						app.handle(req);
 					}
 				} catch (SocketTimeoutException e) {

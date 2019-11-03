@@ -64,7 +64,7 @@ public class ViewGames_Reply implements Message{
 			is.read(name);
 			byte id = info[0];
 			byte max = info[1];
-			Game g = new Game(new String(name), max);
+			Game g = new Game( Util.toString(name), max);
 			g.setId(id);
 			reply.games.add(g);
 		}

@@ -8,6 +8,8 @@ import java.util.List;
 import core.CreateGame_Reply;
 import core.CreateGame_Request;
 import core.Game;
+import core.JoinGame_Reply;
+import core.JoinGame_Request;
 import core.Login_Reply;
 import core.Login_Request;
 import core.Message;
@@ -56,7 +58,16 @@ public class Application {
 		}else if(msg instanceof ViewGames_Reply) {
 			ViewGames_Reply reply = (ViewGames_Reply) msg;
 			updateViewGames(reply.getGames());
+		}else if(msg instanceof JoinGame_Reply) {
+			JoinGame_Reply reply = (JoinGame_Reply) msg;
+			updateGameLobby(reply);
 		}
+	}
+
+	private void updateGameLobby(JoinGame_Reply reply) {
+		
+		currentGame = reply.getGame();
+		lobby.update(currentGame);
 	}
 
 	private void updateViewGames(List<Game> games) {
@@ -74,6 +85,7 @@ public class Application {
 	private void setGame(CreateGame_Reply reply) {
 		currentGame.setGameId(reply.getGameId());
 		showGameLobby();
+		lobby.update(currentGame);
 	}
 
 	private void showGameLobby() {
@@ -175,8 +187,10 @@ public class Application {
 	}
 
 	public void joinGame(int id) {
-		// TODO Auto-generated method stub
+		
 		JoinGame_Request req = new JoinGame_Request(u.getUsername(), id);
+		c.setOutput(req);
+		showGameLobby();
 	}
 
 }

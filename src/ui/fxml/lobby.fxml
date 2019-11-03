@@ -46,7 +46,7 @@
          <center>
             <AnchorPane prefHeight="460.0" prefWidth="495.0" BorderPane.alignment="CENTER">
                <children>
-                  <ListView layoutX="59.0" layoutY="97.0" maxHeight="1.7976931348623157E308" prefHeight="307.0" prefWidth="236.0" />
+                  <ListView fx:id="players_list" layoutX="59.0" layoutY="97.0" maxHeight="1.7976931348623157E308" prefHeight="307.0" prefWidth="236.0" />
                   <Label layoutX="23.0" layoutY="31.0" text="Game Lobby: ">
                      <font>
                         <Font name="Arial Bold" size="18.0" />

@@ -12,6 +12,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import core.CreateGame_Reply;
+import core.JoinGame_Reply;
 import core.Login_Reply;
 import core.Login_Request;
 import core.Message;
@@ -52,7 +53,10 @@ public class Client implements Runnable {
 						continue;
 					}
 					int size = header[0];
-					Message.Type type = Message.Type.values()[header[1]];
+					byte t = header[1];
+					if(t >= Message.Type.values().length)
+						continue;
+					Message.Type type = Message.Type.values()[t];
 					if (type == Message.Type.LOGIN_REPLY) {
 						Login_Reply reply = Login_Reply.read(is);
 						app.handle(reply);
@@ -64,6 +68,9 @@ public class Client implements Runnable {
 						app.handle(reply);
 					} else if(type == Message.Type.VIEWGAMES_REPLY) {
 						ViewGames_Reply reply = ViewGames_Reply.read(is);
+						app.handle(reply);
+					} else if(type == Message.Type.JOINGAME_REPLY) {
+						JoinGame_Reply reply = JoinGame_Reply.read(is);
 						app.handle(reply);
 					}
 				} catch (SocketTimeoutException e) {
