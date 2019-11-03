@@ -10,6 +10,8 @@ import core.JoinGame_Reply;
 import core.JoinGame_Request;
 import core.Login_Reply;
 import core.Login_Request;
+import core.Logout_Reply;
+import core.Logout_Request;
 import core.Message;
 import core.OnlineUsers_Reply;
 import core.OnlineUsers_Request;
@@ -80,6 +82,16 @@ public class Application {
 				//TODO: handle error
 			} else {
 				g.sendMsg(chatMsg.getUsername(), chatMsg.getMessage());
+			}
+		}else if(msg instanceof Logout_Request) {
+			Logout_Request req = (Logout_Request)msg;
+			User u = users.getUser(req.getUsername());
+			if(u == null) {
+				//TODO: error if user == null
+			}else {
+				users.logout(u);
+				Logout_Reply reply = new Logout_Reply(u.getUsername());
+				con.writeMessage(reply);
 			}
 		}
 	}

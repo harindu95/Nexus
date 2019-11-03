@@ -87,7 +87,7 @@
                         <Font name="Arial Black" size="14.0" />
                      </font>
                   </Button>
-                  <Button maxWidth="100.0" minWidth="60.0" mnemonicParsing="false" prefWidth="80.0" style="-fx-border-width: 50; -fx-border-color: FFFFF; -fx-background-color: #023a41;" text="Logout" textFill="WHITE">
+                  <Button maxWidth="100.0" minWidth="60.0" mnemonicParsing="false" onAction="#onLogoutBtn" prefWidth="80.0" style="-fx-background-color: #023a41;" text="Logout" textFill="WHITE">
                      <font>
                         <Font name="Arial Black" size="14.0" />
                      </font>

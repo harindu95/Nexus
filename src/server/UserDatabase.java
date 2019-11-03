@@ -25,6 +25,10 @@ public class UserDatabase {
 		u.setConnection(app);
 	}
 	
+	public void logout(User u) {
+		online.remove(u.getUsername());
+	}
+	
 	User validate(Login_Request req, Application app) {
 		users.put("test", new User("test", "test", 0, 0));
 		String password = req.getPassword();

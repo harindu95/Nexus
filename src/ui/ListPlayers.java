@@ -17,38 +17,23 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-public class ListPlayers {
-	Application app;
+public class ListPlayers extends Base {
 
-	public void start(Stage window, Application app) {
-		Parent root;
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/listPlayers.fxml"));
-			loader.setController(this);
-			this.app = app;
-			root = loader.load();
-			Scene scene = new Scene(root);
-			window.setScene(scene);
-			window.setResizable(false);
-			window.setTitle("Nexus");
-			window.setOnCloseRequest(e -> System.exit(0));
-			window.show();
-		} catch (IOException e) {
-			
-			e.printStackTrace();
-		}
-
+	public ListPlayers(Application app) {
+		super(app);
 	}
 
-	
+	public void start(Stage window) {
+		super.start(window, "fxml/listPlayers.fxml");
+	}
+
 	@FXML
 	ListView<String> onlinelist;
 
-	
 	public void update(List<User> online) {
 
 		for (User u : online) {
-			
+
 			onlinelist.getItems().add(u.getUsername());
 			System.out.println("UPDATE:: " + u.getUsername());
 
@@ -60,13 +45,9 @@ public class ListPlayers {
 	public void handleMouseClick(MouseEvent e) {
 
 		System.out.println("Mouse Clicked");
-		
+
 		onlinelist.getItems().add("username1");
 	}
-	
-	@FXML
-	public void onMenuBtn(ActionEvent e) {
-		app.showMainMenu();
-	}
 
+	
 }

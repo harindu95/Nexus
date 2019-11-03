@@ -1,5 +1,8 @@
 package ui;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,24 +16,24 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
 	client.Application app;
+	Stage stage;
 
-	public void initialize(client.Application app) {
-		 this.app = app; 
+	
+	public void init(Stage stage) throws UnknownHostException, IOException {
+		app = new client.Application();
+		this.stage = stage;
+		app.setLogin(this);
 	}
-
+	
 	@Override
 	public void start(Stage stage) throws Exception {
 
 		
-		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(getClass().getResource("fxml/Login.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/Login.fxml"));
+		loader.setController(this);
 		Parent root = loader.load();
 		Scene scene = new Scene(root);
-		client.Application app = new client.Application();
-		app.setLoginStage(stage);
-		Main controller = loader.<Main>getController();
-		
-		controller.initialize(app);
+		init(stage);
 		stage.setScene(scene);
 		stage.setResizable(false);
 		stage.show();
@@ -57,13 +60,27 @@ public class Main extends Application {
 
 	}
 
+
+	public void close() {
+		stage.close();
+		
+	}
+
+
+	public void show() throws UnknownHostException, IOException {
+		init(stage);
+		stage.show();
+	}
+
 //	• User login/logout 
 //	Database to keep track of users and login credentials
-//TODO	• User accounts (profiles) on the game server
+//  • User accounts (profiles) on the game server
+//	TODO Serialize and store user accounts;
 //	Database to keep track of user’s WIns, Ranks, games played etc.
 //	• Create a game room
 //	• List online users in the system
-//TODO	• Join or leave a game room
+//• Join or leave a game room
+//	TODO leave game room
 //	• chat in the game room
 //	Public
 //	• Interactive game playing (real-time update of game status to all players)

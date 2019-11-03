@@ -14,29 +14,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.stage.Stage;
 
-public class NewGame {
-	Application app;
-	
+public class NewGame extends Base{
+		
 	public NewGame(Application app) {
-		this.app = app;
+		super(app);
 	}
 		
 	public void start(Stage window) {
-        Parent root;
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/makeNewGame.fxml"));
-			loader.setController(this);
-			root = loader.load();
-		    Scene scene =  new Scene(root);
-		    window.setScene(scene);
-	        window.setResizable(false);
-	        window.setTitle("Nexus");
-	        window.show();
-		} catch (IOException e) {
-		
-			e.printStackTrace();
-		}
-    
+		super.start(window, "fxml/makeNewGame.fxml");   
     }
 	
 	@FXML
@@ -80,10 +65,6 @@ public class NewGame {
 		app.createGame(gameName, maxPlayers);
 	}
 	
-	@FXML
-	public void onMenuBtn(ActionEvent e) {
-		app.showMainMenu();
-	}
 
 	
 }

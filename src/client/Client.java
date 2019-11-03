@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import core.ChatMessage;
 import core.JoinGame_Reply;
 import core.Login_Reply;
+import core.Logout_Reply;
 import core.Message;
 import core.OnlineUsers_Reply;
 import core.ViewGames_Reply;
@@ -70,6 +71,9 @@ public class Client implements Runnable {
 					} else if(type == Message.Type.CHATMESSAGE) {
 						ChatMessage msg = ChatMessage.read(is);
 						app.handle(msg);
+					} else if(type == Message.Type.LOGOUT_REPLY) {
+						Logout_Reply reply = Logout_Reply.read(is);
+						app.handle(reply);
 					}
 					
 				} catch (SocketTimeoutException e) {

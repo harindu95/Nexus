@@ -18,41 +18,19 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class GameLobby {
-	Application app;
+public class GameLobby extends Base {
+	
 	
 	public GameLobby(Application app){
-		this.app = app;
+		super(app);
 	}
 
 	@FXML
 	Label gameName_Label;
-	
-	
+		
 	
 	public void start(Stage window) {
-		Parent root;
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/lobby.fxml"));
-			loader.setController(this);
-			root = loader.load();
-			Scene scene = new Scene(root);
-			window.setScene(scene);
-			window.setResizable(false);
-			window.setTitle("Nexus");
-			
-			window.setOnCloseRequest(e -> System.exit(0));
-			window.show();
-		} catch (IOException e) {
-			
-			e.printStackTrace();
-		}
-
-	}
-
-	@FXML
-	public void onMenuBtn(ActionEvent e) {
-		app.showMainMenu();
+		super.start(window, "fxml/lobby.fxml");
 	}
 
 	@FXML

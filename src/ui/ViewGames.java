@@ -19,14 +19,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-public class ViewGames {
-	Application app;
-	List<GameRoom> games;
+public class ViewGames extends Base {
 	
 	public ViewGames(Application app) {
-		this.app = app;
+		super(app);
 	}
 
+	List<GameRoom> games;
+	
 	public void initialize() {
 		gamesTable.setPlaceholder(new Label("No current games available."));
 		name_col.setCellValueFactory(new PropertyValueFactory<GameRoom, String>("name"));
@@ -35,22 +35,7 @@ public class ViewGames {
 	}
 	
 	public void start(Stage window) {
-		Parent root;
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/listGames.fxml"));
-			loader.setController(this);
-			root = loader.load();
-			Scene scene = new Scene(root);
-			window.setScene(scene);
-			window.setResizable(false);
-			window.setTitle("Nexus");
-			window.setOnCloseRequest(e -> System.exit(0));
-			window.show();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-
+		super.start(window, "fxml/listGames.fxml");
 	}
 
 	@FXML
@@ -76,11 +61,7 @@ public class ViewGames {
 		gamesTable.getItems().add(test);
 	}
 	
-	@FXML
-	public void onMenuBtn(ActionEvent e) {
-		app.showMainMenu();
-	}
-	
+
 	@FXML
 	public void handleJoinBtn(ActionEvent e) {
 		GameRoom selected = gamesTable.getSelectionModel().getSelectedItem();

@@ -11,6 +11,8 @@ import core.JoinGame_Reply;
 import core.JoinGame_Request;
 import core.Login_Reply;
 import core.Login_Request;
+import core.Logout_Reply;
+import core.Logout_Request;
 import core.Message;
 import core.OnlineUsers_Reply;
 import core.OnlineUsers_Request;
@@ -21,13 +23,14 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import ui.GameLobby;
 import ui.ListPlayers;
+import ui.Main;
 import ui.UserMenu;
 import ui.ViewGames;
 
 public class Application {
 	Client c;
 	User u;
-	Stage loginStage;
+	Main login;
 	ListPlayers listPlayers;
 	GameRoom currentGame;
 	Stage mainStage;
@@ -49,23 +52,50 @@ public class Application {
 		} else if (msg instanceof OnlineUsers_Reply) {
 			OnlineUsers_Reply reply = (OnlineUsers_Reply) msg;
 			updateOnlineUsers(reply.getUsers());
-		}else if(msg instanceof ViewGames_Reply) {
+		} else if (msg instanceof ViewGames_Reply) {
 			ViewGames_Reply reply = (ViewGames_Reply) msg;
 			updateViewGames(reply.getGames());
-		}else if(msg instanceof JoinGame_Reply) {
+		} else if (msg instanceof JoinGame_Reply) {
 			JoinGame_Reply reply = (JoinGame_Reply) msg;
 			updateGameLobby(reply);
-		}else if(msg instanceof ChatMessage) {
-			ChatMessage chatMsg = (ChatMessage)msg;
+		} else if (msg instanceof ChatMessage) {
+			ChatMessage chatMsg = (ChatMessage) msg;
 			updateChat(chatMsg);
+		} else if (msg instanceof Logout_Reply) {
+			Logout_Reply reply = (Logout_Reply) msg;
+			handleLogout(reply);
+		}
+	}
+
+	private void handleLogout(Logout_Reply reply) {
+		
+		if (reply.getUsername().equals(u.getUsername())) {
+			Platform.runLater(new Runnable() {
+
+				@Override
+				public void run() {
+					try {
+						mainStage.close();
+						login.show();
+
+					} catch (UnknownHostException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+			});
 		}
 	}
 
 	private void updateChat(ChatMessage chatMsg) {
-		if(chatMsg.getId() == currentGame.getId()) {
+		if (chatMsg.getId() == currentGame.getId()) {
 			lobby.addMsg(chatMsg);
 		}
-		
+
 	}
 
 	private void updateGameLobby(JoinGame_Reply reply) {
@@ -74,17 +104,16 @@ public class Application {
 	}
 
 	private void updateViewGames(List<GameRoom> games) {
-		
+
 		Platform.runLater(new Runnable() {
-			
+
 			@Override
 			public void run() {
-				viewGames.update(games);		
+				viewGames.update(games);
 			}
 		});
-		
-	}
 
+	}
 
 	private void showGameLobby() {
 
@@ -122,7 +151,7 @@ public class Application {
 			@Override
 			public void run() {
 				// javaFX operations should go here
-				loginStage.close();
+				login.close();
 				Stage window = new Stage();
 				mainStage = window;
 				userMenu.start(window);
@@ -143,9 +172,9 @@ public class Application {
 		});
 
 	}
-	
-	public void setLoginStage(Stage login) {
-		this.loginStage = login;
+
+	public void setLogin(Main login) {
+		this.login = login;
 	}
 
 	public User getUser() {
@@ -186,7 +215,7 @@ public class Application {
 	}
 
 	public void joinGame(int id) {
-		
+
 		JoinGame_Request req = new JoinGame_Request(u.getUsername(), id);
 		c.setOutput(req);
 		showGameLobby();
@@ -195,7 +224,11 @@ public class Application {
 	public void sendMsg(String msg) {
 		ChatMessage chatMsg = new ChatMessage(msg, currentGame.getId(), u.getUsername());
 		c.setOutput(chatMsg);
-		
+
 	}
 
+	public void logout() {
+		Logout_Request req = new Logout_Request(u.getUsername());
+		c.setOutput(req);
+	}
 }
