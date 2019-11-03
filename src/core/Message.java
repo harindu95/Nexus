@@ -17,9 +17,17 @@ public abstract class Message {
 		RECONNECT_REQUEST, RECONNECT_REPLY
 	}
 	
-	final int USERNAME_SIZE = 16;
-	final int PASSWORD_SIZE = 25;
-	final int HEADER_SIZE = 2;
+	static final int USERNAME_SIZE = 16;
+	static final int PASSWORD_SIZE = 25;
+//	static final int HEADER_SIZE = 2;
+	static final int GAMENAME_SIZE = 30;
+	static final int MAXPLAYERS_SIZE = 1;
+	static final int GAMEID_SIZE = 1;
+	static final int STATUS = 1;
+	static final int TOTALGAMES_SIZE = 1;
+	static final int WINS_SIZE = 1;
+	static final int CHATMESSAGE_SIZE = 200;
+	static final int NUMGAMES_SIZE = 1;
 	
 	byte type = 0;
 	

@@ -7,7 +7,7 @@ import java.io.OutputStream;
 import core.Message.Type;
 
 public class Logout_Request extends Message{
-	byte[] username = new byte[16];
+	byte[] username = new byte[USERNAME_SIZE];
 	
 	private Logout_Request() {
 		super(Type.LOGOUT_REQUEST);
@@ -20,7 +20,7 @@ public class Logout_Request extends Message{
 	
 	@Override
 	public void write(OutputStream os) throws IOException {
-		byte size = 16 + 2;
+		byte size = USERNAME_SIZE;
 		byte[] header = { size, type};
 		os.write(header);
 		os.write(username);		

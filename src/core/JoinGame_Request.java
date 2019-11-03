@@ -9,7 +9,7 @@ import core.Message.Type;
 public class JoinGame_Request extends Message {
 
 	byte gameId;
-	byte[] username = new byte[30];
+	byte[] username = new byte[USERNAME_SIZE];
 
 	private JoinGame_Request() {
 		super(Type.JOINGAME_REQUEST);
@@ -22,7 +22,7 @@ public class JoinGame_Request extends Message {
 	}
 
 	public void write(OutputStream os) throws IOException {
-		byte size = 30 + 1 + 1 + 1;
+		byte size = USERNAME_SIZE + GAMEID_SIZE;
 		byte[] header = { size, type, gameId };
 		os.write(header);
 		os.write(username);
@@ -30,7 +30,7 @@ public class JoinGame_Request extends Message {
 	
 	public static JoinGame_Request read(InputStream is) throws IOException {
 		JoinGame_Request req = new JoinGame_Request();
-		byte[] header = new byte[1];
+		byte[] header = new byte[GAMEID_SIZE];
 		is.read(header);
 		req.gameId = header[0];
 		is.read(req.username);

@@ -21,7 +21,7 @@ public class Reconnect_Request extends Message{
 
 	@Override
 	public void write(OutputStream os) throws IOException {
-		byte size = USERNAME_SIZE + PASSWORD_SIZE + HEADER_SIZE;
+		byte size = USERNAME_SIZE + PASSWORD_SIZE;
 		byte[] header = {size,type};
 		os.write(header);
 		os.write(username);

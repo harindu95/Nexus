@@ -8,8 +8,8 @@ import core.Message.Type;
 
 public class Login_Reply extends Message {
 
-	byte[] username = new byte[16];
-	byte[] password = new byte[25];
+	byte[] username = new byte[USERNAME_SIZE];
+	byte[] password = new byte[PASSWORD_SIZE];
 	byte total = 0;
 	byte wins = 0;
 	byte status = 0;
@@ -81,8 +81,8 @@ public class Login_Reply extends Message {
 	}
 
 	public void write(OutputStream os) throws IOException {
-		int size = 43;
-		byte[] payload = { 43, type, status };
+		byte size = STATUS + USERNAME_SIZE + PASSWORD_SIZE + TOTALGAMES_SIZE + WINS_SIZE;
+		byte[] payload = { size, type, status };
 		os.write(payload);
 		os.write(username);
 		os.write(password);
@@ -92,7 +92,7 @@ public class Login_Reply extends Message {
 
 	public static Login_Reply read(InputStream is) throws IOException {
 		Login_Reply reply = new Login_Reply();
-		byte[] status = new byte[1];
+		byte[] status = new byte[STATUS];
 		is.read(status);
 		reply.status = status[0];
 		is.read(reply.username);

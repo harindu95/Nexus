@@ -12,7 +12,7 @@ public class ViewGames_Request extends Message {
 	}
 	
 	public void write(OutputStream os) throws IOException{
-		byte size = 2;
+		byte size = 0;
 		byte[] payload = {size, type};
 		os.write(payload);
 	}

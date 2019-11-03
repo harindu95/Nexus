@@ -5,9 +5,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class ChatMessage extends Message{
-	byte[] username = new byte[16];
+	byte[] username = new byte[USERNAME_SIZE];
 	byte gameId = 0;
-	byte[] message = new byte[200];
+	byte[] message = new byte[CHATMESSAGE_SIZE];
 		
 	private ChatMessage() {
 		super(Type.CHATMESSAGE);
@@ -22,7 +22,7 @@ public class ChatMessage extends Message{
 	
 	@Override
 	public void write(OutputStream os) throws IOException {
-		byte size = (byte) (200 + 16 + 1 + 2);
+		byte size = (byte) (GAMEID_SIZE + USERNAME_SIZE +CHATMESSAGE_SIZE);
 		byte[] header = {size, type, gameId};
 		os.write(header);
 		os.write(username);
@@ -32,7 +32,7 @@ public class ChatMessage extends Message{
 	
 	public static ChatMessage read(InputStream is) throws IOException {
 		ChatMessage msg = new ChatMessage();
-		byte[] header = new byte[1];
+		byte[] header = new byte[GAMEID_SIZE];
 		is.read(header);
 		msg.gameId = header[0];
 		is.read(msg.username);

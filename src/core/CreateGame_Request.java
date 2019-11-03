@@ -13,8 +13,8 @@ public class CreateGame_Request extends Message {
 //			Char[16] Username = 16 bytes
 //			Char[30] gameName = 30 bytes
 
-	byte[] username = new byte[16];
-	byte[] gamename = new byte[30];
+	byte[] username = new byte[USERNAME_SIZE];
+	byte[] gamename = new byte[GAMENAME_SIZE];
 	byte max = 0;
 	
 	
@@ -31,7 +31,7 @@ public class CreateGame_Request extends Message {
 
 	@Override
 	public void write(OutputStream os) throws IOException {
-		byte size = 49;
+		byte size = GAMENAME_SIZE + USERNAME_SIZE + MAXPLAYERS_SIZE;
 		byte[] payload = {size, type};
 		os.write(payload);
 		os.write(username);
@@ -46,7 +46,7 @@ public class CreateGame_Request extends Message {
 		CreateGame_Request req = new CreateGame_Request();
 		is.read(req.username);
 		is.read(req.gamename);
-		byte[] s = new byte[1];
+		byte[] s = new byte[MAXPLAYERS_SIZE];
 		is.read(s);
 		req.max = s[0];
 		return req;

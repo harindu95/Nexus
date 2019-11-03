@@ -20,7 +20,7 @@ public class Reconnect_Reply extends Message {
 
 	@Override
 	public void write(OutputStream os) throws IOException {
-		byte size = USERNAME_SIZE + HEADER_SIZE;
+		byte size = USERNAME_SIZE;
 		byte[] header = { size, type };
 		os.write(header);
 		os.write(username);

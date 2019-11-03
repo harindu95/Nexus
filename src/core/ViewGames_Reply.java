@@ -36,7 +36,7 @@ public class ViewGames_Reply extends Message{
 	@Override
 	public void write(OutputStream os) throws IOException {
 		byte numGames = (byte) games.size();
-		byte size = (byte) (numGames * (30 + 1 + 1) + 3);
+		byte size = (byte) (numGames * (GAMENAME_SIZE + GAMEID_SIZE + MAXPLAYERS_SIZE) + STATUS + NUMGAMES_SIZE);
 		byte[] header = {size, type, status, numGames};
 		os.write(header);
 		for(GameRoom g: games) {
@@ -44,7 +44,7 @@ public class ViewGames_Reply extends Message{
 			byte max = (byte) g.maxPlayers;
 			byte[] info = {id, max};
 			os.write(info);
-			byte[] name = new byte[30];
+			byte[] name = new byte[GAMENAME_SIZE];
 			Util.strncpy(name, g.name);
 			os.write(name);			
 		}
@@ -61,7 +61,7 @@ public class ViewGames_Reply extends Message{
 		for(int i=0; i< numGames;i++) {
 			byte[] info = new byte[2];
 			is.read(info);
-			byte[] name = new byte[30];
+			byte[] name = new byte[GAMENAME_SIZE];
 			is.read(name);
 			byte id = info[0];
 			byte max = info[1];

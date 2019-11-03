@@ -24,7 +24,7 @@ public class OnlineUsers_Reply extends Message{
 
 	@Override
 	public void write(OutputStream os) throws IOException {
-		byte size = (byte) (16 * online.size());
+		byte size = (byte) (USERNAME_SIZE * online.size());
 		os.write(size);
 		os.write(type);
 		byte numUsers = (byte) online.size();
@@ -38,7 +38,7 @@ public class OnlineUsers_Reply extends Message{
 	
 	public static OnlineUsers_Reply read(InputStream is) throws IOException {
 		byte numUsers = (byte)is.read();
-		byte[] username = new byte[16];
+		byte[] username = new byte[USERNAME_SIZE];
 		OnlineUsers_Reply reply = new OnlineUsers_Reply();
 		for(int i=0;i<numUsers;i++) {
 			is.read(username);

@@ -26,16 +26,16 @@ public class JoinGame_Reply extends Message {
 		byte gameId = (byte)game.id;
 		byte max = (byte)game.maxPlayers;
 		byte numPlayers = (byte)game.users.size();
-		byte size = (byte) (30 + 16 * numPlayers + 2 + 2);
+		byte size = (byte) (GAMENAME_SIZE + USERNAME_SIZE * numPlayers + GAMEID_SIZE + MAXPLAYERS_SIZE + STATUS);
 		byte[] header = { size, type, status};
 		os.write(header);
-		byte[] gameName = Util.strByteArray(game.getName(), 30);
+		byte[] gameName = Util.strByteArray(game.getName(), GAMENAME_SIZE);
 		os.write(gameName);
 		byte[] payload = {gameId, max, numPlayers};
 		os.write(payload);
 		List<User> players = game.getUsers();
 		for(User p: players) {
-			byte[] username = new byte[16];
+			byte[] username = new byte[USERNAME_SIZE];
 			Util.strncpy(username, p.getUsername());
 			os.write(username);
 		}
@@ -44,9 +44,9 @@ public class JoinGame_Reply extends Message {
 	
 	public static JoinGame_Reply read(InputStream is) throws IOException{
 		JoinGame_Reply reply = new JoinGame_Reply();
-		byte[] status = new byte[1];
+		byte[] status = new byte[STATUS];
 		is.read(status);
-		byte[] gameName = new byte[30];
+		byte[] gameName = new byte[GAMENAME_SIZE];
 		is.read(gameName);
 		byte[] header = new byte[3];
 		is.read(header);
@@ -57,7 +57,7 @@ public class JoinGame_Reply extends Message {
 		reply.game = new GameRoom( Util.toString(gameName),max);
 		reply.game.setId(gameId);
 		for(int i=0;i <numPlayers;i++ ) {
-			byte[] username = new byte[16];
+			byte[] username = new byte[USERNAME_SIZE];
 			is.read(username);
 			User u = new User( Util.toString(username));
 			reply.game.join(u);
