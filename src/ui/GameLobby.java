@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import client.Application;
 import core.Game;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -45,6 +46,11 @@ public class GameLobby {
 			e.printStackTrace();
 		}
 
+	}
+
+	@FXML
+	public void onMenuBtn(ActionEvent e) {
+		app.showMainMenu();
 	}
 
 }

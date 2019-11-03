@@ -16,6 +16,7 @@ import core.Login_Reply;
 import core.Login_Request;
 import core.Message;
 import core.OnlineUsers_Reply;
+import core.ViewGames_Reply;
 
 public class Client implements Runnable {
 
@@ -52,9 +53,7 @@ public class Client implements Runnable {
 					}
 					int size = header[0];
 					Message.Type type = Message.Type.values()[header[1]];
-					if (type == Message.Type.LOGIN_REQUEST) {
-						Login_Request req = Login_Request.read(is);
-					} else if (type == Message.Type.LOGIN_REPLY) {
+					if (type == Message.Type.LOGIN_REPLY) {
 						Login_Reply reply = Login_Reply.read(is);
 						app.handle(reply);
 					} else if (type == Message.Type.ONLINEUSERS_REPLY) {
@@ -62,6 +61,9 @@ public class Client implements Runnable {
 						app.handle(reply);
 					} else if(type == Message.Type.CREATEGAME_REPLY) {
 						CreateGame_Reply reply = CreateGame_Reply.read(is);
+						app.handle(reply);
+					} else if(type == Message.Type.VIEWGAMES_REPLY) {
+						ViewGames_Reply reply = ViewGames_Reply.read(is);
 						app.handle(reply);
 					}
 				} catch (SocketTimeoutException e) {

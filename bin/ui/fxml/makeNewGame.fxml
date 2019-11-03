@@ -24,7 +24,7 @@
       </Label>
       <ButtonBar buttonMinWidth="60.0" layoutX="14.0" layoutY="14.0" maxHeight="60.0" minHeight="40.0" nodeOrientation="LEFT_TO_RIGHT" style="-fx-background-color: #077582; -fx-opacity: 80%;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <buttons>
-            <Button maxWidth="100.0" minWidth="60.0" mnemonicParsing="false" prefWidth="80.0" style="-fx-border-width: 50; -fx-border-color: FFFFF; -fx-background-color: #023a41;" text="Menu" textFill="WHITE">
+            <Button maxWidth="100.0" minWidth="60.0" mnemonicParsing="false" onAction="#onMenuBtn" prefWidth="80.0" style="-fx-border-width: 50; -fx-border-color: FFFFF; -fx-background-color: #023a41;" text="Menu" textFill="WHITE">
                <font>
                   <Font name="Arial Black" size="14.0" />
                </font>

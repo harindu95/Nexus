@@ -21,8 +21,14 @@ public class GameList {
 
 	public int createGame(User creator, String gameName, int max) {
 		Game g = new Game(creator, gameName, max);
+		int id = games.size();
+		g.setId(id);
 		games.add(g);
-		return (games.size() - 1);
+		return id;
 	}
-
+	
+	public List<Game> getGames(){
+		return games;
+		
+	}
 }

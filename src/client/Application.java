@@ -2,6 +2,7 @@ package client;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 
 import core.CreateGame_Reply;
@@ -13,11 +14,16 @@ import core.Message;
 import core.OnlineUsers_Reply;
 import core.OnlineUsers_Request;
 import core.User;
+import core.ViewGames_Reply;
+import core.ViewGames_Request;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 import ui.GameLobby;
 import ui.ListPlayers;
 import ui.UserMenu;
+import ui.ViewGames;
 
 public class Application {
 	Client c;
@@ -25,8 +31,10 @@ public class Application {
 	Stage loginStage;
 	ListPlayers listPlayers;
 	Game currentGame;
-	private Stage newGameStage;
+	Stage mainStage;
 	GameLobby lobby;
+	private ViewGames viewGames;
+	private UserMenu userMenu;
 
 	public Application() throws UnknownHostException, IOException {
 		c = new Client(this);
@@ -45,7 +53,22 @@ public class Application {
 		} else if (msg instanceof CreateGame_Reply) {
 			CreateGame_Reply reply = (CreateGame_Reply) msg;
 			setGame(reply);
+		}else if(msg instanceof ViewGames_Reply) {
+			ViewGames_Reply reply = (ViewGames_Reply) msg;
+			updateViewGames(reply.getGames());
 		}
+	}
+
+	private void updateViewGames(List<Game> games) {
+		
+		Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				viewGames.update(games);		
+			}
+		});
+		
 	}
 
 	private void setGame(CreateGame_Reply reply) {
@@ -60,7 +83,7 @@ public class Application {
 
 			@Override
 			public void run() {
-				lobby.start(newGameStage);
+				lobby.start(mainStage);
 //				lobby.update();
 			}
 		});
@@ -84,20 +107,33 @@ public class Application {
 
 	public void showUserMenu(String username) {
 
-		Application app = this;
+		userMenu = new UserMenu(this);
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
 				// javaFX operations should go here
 				loginStage.close();
 				Stage window = new Stage();
-				UserMenu userMenu = new UserMenu(app);
+				mainStage = window;
 				userMenu.start(window);
 			}
 		});
 
 	}
 
+	public void showMainMenu() {
+
+		Application app = this;
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				// javaFX operations should go here
+				userMenu.start(mainStage);
+			}
+		});
+
+	}
+	
 	public void setLoginStage(Stage login) {
 		this.loginStage = login;
 	}
@@ -126,11 +162,21 @@ public class Application {
 		listPlayers = controller;
 	}
 
-	public void createGame(Stage newGame, String gameName, int maxPlayers) {
+	public void createGame(String gameName, int maxPlayers) {
 		CreateGame_Request req = new CreateGame_Request(u.getUsername(), gameName, maxPlayers);
 		currentGame = new Game(u, gameName, maxPlayers);
 		c.setOutput(req);
-		newGameStage = newGame;
+	}
+
+	public void viewGames(ViewGames viewGames) {
+		this.viewGames = viewGames;
+		ViewGames_Request req = new ViewGames_Request();
+		c.setOutput(req);
+	}
+
+	public void joinGame(int id) {
+		// TODO Auto-generated method stub
+		JoinGame_Request req = new JoinGame_Request(u.getUsername(), id);
 	}
 
 }

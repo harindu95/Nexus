@@ -10,6 +10,7 @@ import core.CreateGame_Request;
 import core.Login_Request;
 import core.Message;
 import core.OnlineUsers_Request;
+import core.ViewGames_Request;
 
 public class Connection extends Thread {
 
@@ -40,7 +41,10 @@ public class Connection extends Thread {
 						break;
 					}
 					int size = header[0];
-					Message.Type type = Message.Type.values()[header[1]];
+					byte t = header[1];
+					if(t >= Message.Type.values().length)
+						continue;
+					Message.Type type = Message.Type.values()[t];
 					System.out.println("Reading message");
 					if (type == Message.Type.LOGIN_REQUEST) {
 						Login_Request req = Login_Request.read(is);
@@ -53,6 +57,10 @@ public class Connection extends Thread {
 					}else if(type == Message.Type.CREATEGAME_REQUEST) {
 						CreateGame_Request req = CreateGame_Request.read(is);
 						System.out.println("Reading CREATEGAME_REQUEST");
+						app.handle(req);
+					}else if(type == Message.Type.VIEWGAMES_REQUEST) {
+						ViewGames_Request req = new ViewGames_Request();
+						System.out.println("Reading VIEWGAMES_REQUEST");
 						app.handle(req);
 					}
 				} catch (SocketTimeoutException e) {

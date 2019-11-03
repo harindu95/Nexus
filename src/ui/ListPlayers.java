@@ -8,6 +8,7 @@ import client.Application;
 import core.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -62,4 +63,10 @@ public class ListPlayers {
 		
 		onlinelist.getItems().add("username1");
 	}
+	
+	@FXML
+	public void onMenuBtn(ActionEvent e) {
+		app.showMainMenu();
+	}
+
 }

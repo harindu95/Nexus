@@ -77,8 +77,13 @@ public class NewGame {
 		String gameName = name_field.getText();
 		String max = max_field.getText();
 		int maxPlayers = Integer.parseInt(max);
-		app.createGame(stage, gameName, maxPlayers);
+		app.createGame(gameName, maxPlayers);
 	}
 	
+	@FXML
+	public void onMenuBtn(ActionEvent e) {
+		app.showMainMenu();
+	}
+
 	
 }

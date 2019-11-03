@@ -4,12 +4,15 @@ import java.util.List;
 
 import core.CreateGame_Reply;
 import core.CreateGame_Request;
+import core.Game;
 import core.Login_Reply;
 import core.Login_Request;
 import core.Message;
 import core.OnlineUsers_Reply;
 import core.OnlineUsers_Request;
 import core.User;
+import core.ViewGames_Reply;
+import core.ViewGames_Request;
 
 public class Application {
 	
@@ -45,6 +48,11 @@ public class Application {
 				CreateGame_Reply reply = new CreateGame_Reply(id);
 				con.writeMessage(reply);
 			}
+		}else if(msg instanceof ViewGames_Request) {
+			ViewGames_Request req = (ViewGames_Request) msg;
+			List<Game> gameList = games.getGames();
+			ViewGames_Reply reply = new ViewGames_Reply(gameList);
+			con.writeMessage(reply);
 		}
 	}
 	

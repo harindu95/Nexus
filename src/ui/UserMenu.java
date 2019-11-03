@@ -65,4 +65,15 @@ public class UserMenu {
 		listPlayers.start(stage, app);
 
 	}
+	
+	
+	@FXML
+	void handleJoinGame(ActionEvent e) {
+		Stage stage = (Stage) ((Button) e.getSource()).getScene().getWindow();
+		ViewGames viewGames = new ViewGames(app);
+		app.viewGames(viewGames);
+		viewGames.start(stage);
+		
+		
+	}
 }

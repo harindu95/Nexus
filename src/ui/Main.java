@@ -61,9 +61,9 @@ public class Main extends Application {
 //	Database to keep track of users and login credentials
 //TODO	• User accounts (profiles) on the game server
 //	Database to keep track of user’s WIns, Ranks, games played etc.
-//TODO	• Create a game room
+//	• Create a game room
 //	• List online users in the system
-//	• Join or leave a game room
+//TODO	• Join or leave a game room
 //	• chat in the game room
 //	Public
 //	• Interactive game playing (real-time update of game status to all players)

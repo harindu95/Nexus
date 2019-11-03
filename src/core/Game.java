@@ -2,6 +2,11 @@ package core;
 
 import java.util.List;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class Game {
 	String name;
 	public String getName() {
@@ -63,5 +68,17 @@ public class Game {
 	public void setGameId(int id) {
 		this.id = id;
 	}
+	
+//	public StringProperty nameProperty() {
+//		return new SimpleStringProperty(name);
+//	}
+//	
+//	public IntegerProperty idProperty() {
+//		return new SimpleIntegerProperty(id);
+//	}
+//	
+//	public IntegerProperty maxProperty() {
+//		return new SimpleIntegerProperty(maxPlayers);
+//	}
 }
 
