@@ -9,6 +9,7 @@ import java.util.TimerTask;
 import core.ChatMessage;
 import core.CreateGame_Request;
 import core.GameRoom;
+import core.GameState;
 import core.JoinGame_Reply;
 import core.JoinGame_Request;
 import core.Login_Reply;
@@ -85,6 +86,8 @@ public class Application {
 		} else if(msg instanceof RollDice) {
 			RollDice dice = (RollDice) msg;
 			updateGame(dice);
+		} else if(msg instanceof GameState) {
+			updateGame(msg);
 		}
 	}
 
@@ -92,6 +95,12 @@ public class Application {
 		if(msg instanceof RollDice) {
 			RollDice dice = (RollDice) msg;
 			game.updateRoll(dice.getUsername(), dice.getDice());
+		}else if(msg instanceof GameState) {
+			GameState state = (GameState) msg;
+			if(game == null) {
+				game = new Game(this, currentGame.getId(), u.getUsername());
+			}
+			game.update(state.getPlayers());
 		}
 		
 	}
@@ -307,7 +316,7 @@ public class Application {
 	}
 
 	public void showGame() {
-		game = new Game(this, currentGame.getId(), u.getUsername());
+//		game = new Game(this, currentGame.getId(), u.getUsername());
 		game.start(mainStage);
 		
 	}

@@ -12,6 +12,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import core.ChatMessage;
+import core.GameState;
 import core.JoinGame_Reply;
 import core.Login_Reply;
 import core.Logout_Reply;
@@ -85,6 +86,8 @@ public class Connection implements Runnable {
 							msg = Reconnect_Reply.read(buf);
 						}else if(type == Message.Type.ROLLDICE) {
 							msg = RollDice.read(buf);
+						}else if(type == Message.Type.GAMESTATE) {
+							msg = GameState.read(buf);
 						}
 
 						app.handle(msg);

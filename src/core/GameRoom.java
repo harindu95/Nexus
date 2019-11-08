@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import server.Application;
+import ui.Game;
 
 public class GameRoom {
 	String name;
@@ -14,21 +15,25 @@ public class GameRoom {
 	User creator;
 	int maxPlayers = 1;
 	int id = 0;
+	Game serverGame;
 
 	public GameRoom(User creator, String name, int max) {
 		this.creator = creator;
 		this.name = name;
 		maxPlayers = max;
+		serverGame = new Game();
 		join(creator);
 	}
 
 	public GameRoom(String name, int max) {
 		this.name = name;
 		maxPlayers = max;
+		serverGame = new Game();
 	}
 
 	public void join(User player) {
 		users.put(player.getUsername(), player);
+		serverGame.addPlayer(player.getUsername());
 	}
 
 	public void setGameId(int id) {
@@ -69,6 +74,7 @@ public class GameRoom {
 
 	public void setId(int id) {
 		this.id = id;
+		
 	}
 
 	public void sendMsg(String username, String txt) {

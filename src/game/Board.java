@@ -20,7 +20,7 @@ public class Board {
 		dice = new Dice();
 		init();
 	}
-
+	
 	public void init() {
 
 		tiles.add(new Tile("GO", 0));

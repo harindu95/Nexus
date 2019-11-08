@@ -28,7 +28,7 @@ public class Game extends Base {
 	Player current;
 	List<Player> players;
 	int gameId = 0;
-	
+
 	public Game(Application app, int gameId, String username) {
 		super(app);
 		board = new Board();
@@ -38,6 +38,13 @@ public class Game extends Base {
 		players.add(current);
 	}
 	
+		
+	public Game() {
+		super(null);
+		board = new Board();
+		players = new ArrayList<>();
+	}
+
 	public void start(Stage window) {
 		super.start(window, "fxml/Game.fxml");
 		Parent root;
@@ -53,28 +60,27 @@ public class Game extends Base {
 			window.setOnCloseRequest(e -> System.exit(0));
 			window.show();
 		} catch (IOException e) {
-			
+
 			e.printStackTrace();
 		}
 
-		
 	}
 
 	@FXML
 	Canvas canvas;
-	
+
 	@FXML
 	Button buyBtn;
-	
+
 	@FXML
 	TextArea properties;
-	
+
 	@FXML
 	public void handleBuy(ActionEvent e) {
 		current.buy();
 		draw();
 	}
-	
+
 	@FXML
 	public void handleRoll(ActionEvent e) {
 		int r = board.rollDice();
@@ -82,31 +88,31 @@ public class Game extends Base {
 //		draw();
 		app.rollDice(gameId, r);
 	}
-	
+
 	@FXML
 	Label playerLocation;
-	
+
 	@FXML
 	Label playerName;
-	
+
 	@FXML
 	Label money;
-	
+
 	@FXML
 	Circle color;
-	
+
 	@FXML
 	Label currentTurn;
-	
+
 	@FXML
 	Button rentBtn;
-	
+
 	Board board;
-	
+
 	public void draw() {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		board.draw(gc);
-	
+
 		playerName.setText(current.getName());
 		color.setFill(current.getColor());
 		money.setText(String.format("$ %.2f", current.getMoney()));
@@ -115,29 +121,64 @@ public class Game extends Base {
 		playerLocation.setText(tile.toString());
 		buyBtn.setDisable(!tile.canBuy());
 		rentBtn.setDisable(!tile.canRent());
-		
-		for(Player p: players) {
+
+		for (Player p : players) {
 			p.draw(gc);
+			
 		}
 	}
 
 	public void updateRoll(String username, int dice) {
-		for(Player p: players) {
-			if(p.getName().equals(username)) {
+		for (Player p : players) {
+			if (p.getName().equals(username)) {
 				p.move(dice);
 			}
 		}
 		Platform.runLater(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				draw();
-				
+
 			}
 		});
-		
-		
+
 	}
-	
-	
+
+	public List<Player> getPlayers() {
+
+		return players;
+	}
+
+	public void addPlayer(String username) {
+		Player p = new Player(username);
+		p.setId(players.size());
+		players.add(p);
+	}
+
+
+	public void update(List<Player> players) {
+		this.players = players;
+		int i = 0;
+		for (Player p : players) {
+			p.setBoard(board);
+			p.setId(i);			
+			i++;
+			if(p.getName().equals(current.getName())){
+				current = p;
+			}
+		}
+
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run() {
+				if(canvas != null)
+				draw();
+
+			}
+		});
+
+	}
+
 }

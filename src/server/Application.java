@@ -6,6 +6,7 @@ import java.util.List;
 import core.ChatMessage;
 import core.CreateGame_Request;
 import core.GameRoom;
+import core.GameState;
 import core.JoinGame_Reply;
 import core.JoinGame_Request;
 import core.Login_Reply;
@@ -61,6 +62,9 @@ public class Application {
 				GameRoom game = games.createGame(u, req.getGameName(), req.getMax());
 				JoinGame_Reply reply = new JoinGame_Reply(game);
 				con.send(reply);
+				GameState state = new GameState(game);
+				game.sendMsg(state);
+				
 			}
 		} else if (msg instanceof ViewGames_Request) {
 			ViewGames_Request req = (ViewGames_Request) msg;
@@ -81,6 +85,8 @@ public class Application {
 				con.send(reply);
 				String txt = String.format("%s joined the game", player.getUsername());
 				g.sendMsg(player.getUsername(), txt);
+				GameState state = new GameState(g);
+				g.sendMsg(state);
 
 			}
 		} else if (msg instanceof ChatMessage) {

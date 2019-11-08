@@ -12,7 +12,7 @@ public class Player {
 	String username;
 	int position = 0;
 	double money = 5000;
-	int id = 0;
+	private int id = 0;
 	static Color[] colors = {
 		Color.BLUE,
 		Color.VIOLET,
@@ -28,6 +28,11 @@ public class Player {
 	
 	Board board;
 	
+	public Player(String username) {
+		owned = new ArrayList<Tile>();
+		this.username = username;
+	}
+	
 	public Player(String username, Board map) {
 		board = map;
 		owned = new ArrayList<Tile>();
@@ -35,7 +40,7 @@ public class Player {
 	}
 	
 	public void draw(GraphicsContext gc){
-		gc.setFill(Color.BLUE);
+		gc.setFill(getColor());
 		int x = board.getCenterX(position);
 		int y = board.getCenterY(position);
 		gc.fillOval(x, y, 20, 20);
@@ -77,13 +82,18 @@ public class Player {
 	public void buy() {
 		Tile tile = board.getTile(position);
 		if(tile.getPrice() < money) {
-			tile.owner = this;
 			money -= tile.getPrice();
-			owned.add(tile);
+			addTile(tile);
+			
 		}else {
 //			TODO: Not enough money
 		}
 		
+	}
+	
+	public void addTile(Tile tile) {
+		tile.owner = this;
+		owned.add(tile);
 	}
 	
 	
@@ -129,5 +139,36 @@ public class Player {
 			i++;
 		}
 		return tiles;
+	}
+
+	public void setPosition(byte pos) {
+		position = pos;
+	}
+
+	public void setMoney(double m) {
+		money = m;
+		
+	}
+
+	int[] properties;
+	public void setProperties(int[] o) {
+		properties = o;
+		
+	}
+
+	public void setBoard(Board board) {
+		this.board = board;
+		for(int i: properties) {
+			addTile(board.getTile(i));
+		}
+		
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 }
