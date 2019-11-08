@@ -7,6 +7,7 @@ CPSC 441 - 2D game
 
 ## Compilation
 * Eclipse is required
+* Add OpenJFX libraries to classpath
 
 ## Run
 1. Run server first
