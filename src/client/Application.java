@@ -52,8 +52,22 @@ public class Application {
 	
 	
 	
-	public Application() throws UnknownHostException, IOException {
+/*	public Application() throws UnknownHostException, IOException {
 		con = new Connection(this);
+		Thread t = new Thread(con);
+		t.start();
+		networkStatus = new NetworkStatus(this);
+			
+	}*/
+	
+	public Application(String hostIP) throws UnknownHostException, IOException {
+		if(hostIP.length() > 0) {
+			System.out.println(hostIP);
+			con = new Connection(this, hostIP);
+
+		}else {
+			con = new Connection(this);
+		}
 		Thread t = new Thread(con);
 		t.start();
 		networkStatus = new NetworkStatus(this);

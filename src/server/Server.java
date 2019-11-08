@@ -42,7 +42,7 @@ public class Server {
 	public Server() throws UnknownHostException, IOException {
 		// Initialize a server socket
 		pool = Executors.newCachedThreadPool();
-		serverSocket = new ServerSocket(3000);
+		serverSocket = new ServerSocket(3001);
 		System.out.println("Waiting for a client ");
 		
 
