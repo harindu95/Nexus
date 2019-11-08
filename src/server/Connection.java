@@ -17,6 +17,7 @@ import core.Logout_Request;
 import core.Message;
 import core.OnlineUsers_Request;
 import core.Reconnect_Request;
+import core.RollDice;
 import core.Util;
 import core.ViewGames_Request;
 
@@ -92,6 +93,8 @@ public class Connection extends Thread {
 							msg = Logout_Request.read(buf);
 						} else if (type == Message.Type.RECONNECT_REQUEST) {
 							msg = Reconnect_Request.read(buf);
+						} else if(type == Message.Type.ROLLDICE) {
+							msg = RollDice.read(buf);
 						}
 						app.handle(msg);
 					}

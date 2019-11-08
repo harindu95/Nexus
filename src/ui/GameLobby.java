@@ -78,6 +78,12 @@ public class GameLobby extends Base {
 		app.sendMsg(msg);
 	}
 	
+	@FXML
+	public void handleStartGameBtn(ActionEvent e) {
+		app.showGame();
+
+	}
+	
 
 
 

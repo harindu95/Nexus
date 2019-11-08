@@ -20,11 +20,13 @@ import core.OnlineUsers_Reply;
 import core.OnlineUsers_Request;
 import core.Reconnect_Reply;
 import core.Reconnect_Request;
+import core.RollDice;
 import core.User;
 import core.ViewGames_Reply;
 import core.ViewGames_Request;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import ui.Game;
 import ui.GameLobby;
 import ui.ListPlayers;
 import ui.Main;
@@ -45,6 +47,8 @@ public class Application {
 	private UserMenu userMenu;
 	int retries = 0;
 	Timer networkTimer;
+	Game game;
+	
 	
 	
 	public Application() throws UnknownHostException, IOException {
@@ -78,7 +82,18 @@ public class Application {
 		} else if(msg instanceof Reconnect_Reply) {
 			Reconnect_Reply reply = (Reconnect_Reply) msg;
 			reconnected();
+		} else if(msg instanceof RollDice) {
+			RollDice dice = (RollDice) msg;
+			updateGame(dice);
 		}
+	}
+
+	private void updateGame(Message msg) {
+		if(msg instanceof RollDice) {
+			RollDice dice = (RollDice) msg;
+			game.updateRoll(dice.getUsername(), dice.getDice());
+		}
+		
 	}
 
 	private void reconnected() {
@@ -289,5 +304,16 @@ public class Application {
 		
 		networkStatus.start(mainStage);
 		
+	}
+
+	public void showGame() {
+		game = new Game(this, currentGame.getId(), u.getUsername());
+		game.start(mainStage);
+		
+	}
+
+	public void rollDice(int gameId, int r) {
+		RollDice msg = new RollDice(u.getUsername(), gameId, r);
+		con.send(msg);		
 	}
 }

@@ -17,6 +17,7 @@ import core.OnlineUsers_Reply;
 import core.OnlineUsers_Request;
 import core.Reconnect_Reply;
 import core.Reconnect_Request;
+import core.RollDice;
 import core.User;
 import core.ViewGames_Reply;
 import core.ViewGames_Request;
@@ -112,6 +113,9 @@ public class Application {
 				Reconnect_Reply reply = new Reconnect_Reply(u.getUsername());
 				con.send(reply);
 			}
+		}else if(msg instanceof RollDice) {
+			RollDice m = (RollDice) msg;
+			games.getGameRoom(m.getGameId()).sendMsg(m);
 		}
 	}
 
@@ -119,6 +123,11 @@ public class Application {
 		ChatMessage chatMsg = new ChatMessage(msg, gameId, username);
 		con.send(chatMsg);
 
+	}
+
+	public void sendMsg(Message m) {
+		con.send(m);
+		
 	}
 
 }

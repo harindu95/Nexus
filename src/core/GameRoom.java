@@ -30,7 +30,7 @@ public class GameRoom {
 	public void join(User player) {
 		users.put(player.getUsername(), player);
 	}
-	
+
 	public void setGameId(int id) {
 		this.id = id;
 	}
@@ -70,14 +70,24 @@ public class GameRoom {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public void sendMsg(String username, String txt) {
 		List<User> players = getUsers();
-		for(User u: players) {
+		for (User u : players) {
 			Application serverApp = u.getConnection();
-			if(serverApp != null)
+			if (serverApp != null)
 				serverApp.sendMsg(txt, id, username);
 		}
-		
+
+	}
+
+	public void sendMsg(Message m) {
+		List<User> players = getUsers();
+		for (User u : players) {
+			Application serverApp = u.getConnection();
+			if (serverApp != null)
+				serverApp.sendMsg(m);
+		}
+
 	}
 }

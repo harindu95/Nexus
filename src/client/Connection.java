@@ -18,6 +18,7 @@ import core.Logout_Reply;
 import core.Message;
 import core.OnlineUsers_Reply;
 import core.Reconnect_Reply;
+import core.RollDice;
 import core.Util;
 import core.ViewGames_Reply;
 
@@ -82,6 +83,8 @@ public class Connection implements Runnable {
 							msg = Logout_Reply.read(buf);
 						} else if (type == Message.Type.RECONNECT_REPLY) {
 							msg = Reconnect_Reply.read(buf);
+						}else if(type == Message.Type.ROLLDICE) {
+							msg = RollDice.read(buf);
 						}
 
 						app.handle(msg);
