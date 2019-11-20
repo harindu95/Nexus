@@ -3,6 +3,7 @@ package server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -42,8 +43,11 @@ public class Server {
 	public Server() throws UnknownHostException, IOException {
 		// Initialize a server socket
 		pool = Executors.newCachedThreadPool();
-		serverSocket = new ServerSocket(3001);
+		serverSocket = new ServerSocket(3011);
 		System.out.println("Waiting for a client ");
+		InetAddress localhost = InetAddress.getLocalHost(); 
+	    System.out.println("System IP Address : " + 
+	                      (localhost.getHostAddress()).trim()); 
 		
 
 	}

@@ -140,7 +140,7 @@ public class Connection implements Runnable {
 
 	private void init() throws IOException {
 		// Initialize a client socket connection to the server
-		Socket clientSocket = new Socket(hostIP, 3001);
+		Socket clientSocket = new Socket(hostIP, 3000);
 
 		// Initialize input and an output stream for the connection(s)
 		os = clientSocket.getOutputStream();
