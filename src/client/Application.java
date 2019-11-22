@@ -60,14 +60,15 @@ public class Application {
 			
 	}*/
 	
-	public Application(String hostIP) throws UnknownHostException, IOException {
+	public Application(String hostIP, int hostPort) throws UnknownHostException, IOException {
 		if(hostIP.length() > 0) {
 			System.out.println(hostIP);
-			con = new Connection(this, hostIP);
+			con = new Connection(this, hostIP, hostPort);
 
 		}else {
 			con = new Connection(this);
 		}
+		
 		Thread t = new Thread(con);
 		t.start();
 		networkStatus = new NetworkStatus(this);

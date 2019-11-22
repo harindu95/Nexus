@@ -18,10 +18,11 @@ public class Main extends Application {
 	client.Application app;
 	Stage stage;
 	static String hostIP;
+	static int hostPort;
 
 	
 	public void init(Stage stage) throws UnknownHostException, IOException {
-		app = new client.Application(hostIP);
+		app = new client.Application(hostIP, hostPort);
 		this.stage = stage;
 		app.setLogin(this);
 	}
@@ -43,6 +44,7 @@ public class Main extends Application {
 	
 	public static void main(String[] args) {
 		hostIP = args[0];
+		hostPort = Integer.parseInt(args[1]);
 		launch(args);
 	}
 

@@ -19,11 +19,13 @@ public class Server {
 	
 	ExecutorService pool;
 	ServerSocket serverSocket;
+	static int portNum = 3001;
 	
 	public static void main(String[] args) {
 		Server s = null;
 		try {
-			s =  new Server();
+			portNum = Integer.parseInt(args[0]);
+			s =  new Server(portNum);
 			while(true) {
 				s.listen();
 			}
@@ -43,7 +45,19 @@ public class Server {
 	public Server() throws UnknownHostException, IOException {
 		// Initialize a server socket
 		pool = Executors.newCachedThreadPool();
-		serverSocket = new ServerSocket(3011);
+		serverSocket = new ServerSocket(3001);
+		System.out.println("Waiting for a client ");
+		InetAddress localhost = InetAddress.getLocalHost(); 
+	    System.out.println("System IP Address : " + 
+	                      (localhost.getHostAddress()).trim()); 
+		
+
+	}
+	
+	public Server(int port) throws UnknownHostException, IOException {
+		// Initialize a server socket
+		pool = Executors.newCachedThreadPool();
+		serverSocket = new ServerSocket(port);
 		System.out.println("Waiting for a client ");
 		InetAddress localhost = InetAddress.getLocalHost(); 
 	    System.out.println("System IP Address : " + 
