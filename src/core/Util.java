@@ -69,7 +69,7 @@ public class Util {
 	static int error_counter = 0;
 	public static  void showDialog(String error) {
 		error_counter++;
-		if(error_counter > 5)
+		if(error_counter > 30)
 			return;
 		Platform.runLater(new Runnable() {
 			

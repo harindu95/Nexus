@@ -23,11 +23,14 @@ public class Main extends Application {
 	public void init(Stage stage) {
 		try {
 			app = new client.Application();
+			this.stage = stage;
+			app.setLogin(this);
 		} catch (IOException e) {
-			Util.showDialog(e.getMessage());		
+			Util.showDialog(e.getMessage());
+			
+			
 		}
-		this.stage = stage;
-		app.setLogin(this);
+		
 	}
 	
 	@Override
