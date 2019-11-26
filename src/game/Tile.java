@@ -135,7 +135,7 @@ public class Tile {
 	}
 	
 	public boolean canBuy() {
-		return price > 0;
+		return (price > 0 ) && owner == null;
 	}
 	
 	public boolean canRent() {

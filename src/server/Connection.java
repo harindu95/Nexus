@@ -7,11 +7,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.nio.ByteBuffer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import core.ChatMessage;
 import core.CreateGame_Request;
+import core.GameState;
 import core.JoinGame_Request;
+import core.LeaveGame;
 import core.Login_Request;
 import core.Logout_Request;
 import core.Message;
@@ -59,8 +62,8 @@ public class Connection extends Thread {
 						// TODO: Disconnected
 						break;
 					}
-					int size = Util.unsignedToBytes(header[0]);
-					byte t = header[1];
+					int size = Util.toShort(header);
+					byte t = (byte)is.read();
 					if (t >= Message.Type.values().length || t <= 0 || size < 0) {
 						System.err.println("Invalid header !!" +"  " + size + "Bytes | " +  t + " Type");
 						continue;
@@ -95,6 +98,10 @@ public class Connection extends Thread {
 							msg = Reconnect_Request.read(buf);
 						} else if(type == Message.Type.ROLLDICE) {
 							msg = RollDice.read(buf);
+						}else if(type == Message.Type.GAMESTATE) {
+							msg = GameState.read(buf);
+						}else if(type == Message.Type.LEAVEGAME) {
+							msg = LeaveGame.read(buf);
 						}
 						app.handle(msg);
 					}
@@ -121,14 +128,16 @@ public class Connection extends Thread {
 		try {
 			ByteArrayOutputStream buf = new ByteArrayOutputStream();
 			msg.write(buf);
-			byte size = (byte) buf.size();
-			byte type = msg.getType();
-			byte[] header = { size, type };
+			byte[] size = Util.toBytes((short)buf.size());
+						
+			byte[] type = { msg.getType() };
+			
 			synchronized (socket) {
-				os.write(header);
+				os.write(size);
+				os.write(type);				
 				os.write(buf.toByteArray());
 			}
-
+		
 			System.out.println("Sent :" + msg.toString() + " | " + buf.size() + " Bytes");
 		} catch (IOException e) {
 			e.printStackTrace();

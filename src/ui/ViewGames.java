@@ -57,8 +57,8 @@ public class ViewGames extends Base {
 
 	@FXML
 	public void onClick(MouseEvent e) {
-		GameRoom test = new core.GameRoom("game_name__@@@", 12);
-		gamesTable.getItems().add(test);
+//		GameRoom test = new core.GameRoom("game_name__@@@", 12);
+//		gamesTable.getItems().add(test);
 	}
 	
 

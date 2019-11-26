@@ -1,5 +1,7 @@
 package core;
 
+import java.nio.ByteBuffer;
+
 public class Util {
 	static void strncpy(byte[] dest, String source) {
 		char[] chars = source.toCharArray();
@@ -33,4 +35,29 @@ public class Util {
 	 public static int unsignedToBytes(byte b) {
 		    return b & 0xFF;
 	 }
+
+	public static short toShort(byte[] header) {
+		System.out.println("header -- " + header[0] + header[1]);
+		ByteBuffer buf = ByteBuffer.allocate(2);
+		buf.put(header[0]);
+		buf.put(header[1]);
+		buf.flip();
+		return buf.getShort();
+		
+	}
+
+	public static byte[] toBytes(short size) {
+		ByteBuffer buf = ByteBuffer.allocate(2);
+		buf.putShort(size);
+		buf.flip();
+		byte[] array =  buf.array();	
+		return array;
+	}
+	
+	public static void log(byte[] data) {
+		for(byte b: data) {
+			System.out.print(b);
+		}
+		System.out.println();
+	}
 }

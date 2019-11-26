@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -53,8 +54,8 @@ public class Connection implements Runnable {
 							app.reconnect();
 						}
 					}
-					int size = Util.unsignedToBytes(header[0]);
-					byte t = header[1];
+					int size = Util.toShort(header);
+					byte t = (byte)is.read();
 					if (t >= Message.Type.values().length || t <= 0 || size < 0) {
 						System.err.println("Invalid header !!" + "  " + size + "Bytes | " + t + " Type");
 						continue;
@@ -88,6 +89,7 @@ public class Connection implements Runnable {
 							msg = RollDice.read(buf);
 						}else if(type == Message.Type.GAMESTATE) {
 							msg = GameState.read(buf);
+							
 						}
 
 						app.handle(msg);
@@ -116,12 +118,15 @@ public class Connection implements Runnable {
 		try {
 			ByteArrayOutputStream buf = new ByteArrayOutputStream();
 			msg.write(buf);
-			byte size = (byte) buf.size();
-			byte type = msg.getType();
-			byte[] header = { size, type };
-			os.write(header);
+			byte[] size = Util.toBytes((short)buf.size());
+			byte[] type = { msg.getType() };
+			os.write(size);
+			os.write(type);
 			os.write(buf.toByteArray());
 			sentBytes += buf.size();
+//			Util.log(size);
+//			Util.log(type);
+//			Util.log(buf.toByteArray());
 			System.out.println("Sent :" + msg.toString() + " | " + buf.size() + " Bytes");
 
 		} catch (IOException e) {

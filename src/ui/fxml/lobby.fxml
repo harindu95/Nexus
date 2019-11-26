@@ -67,7 +67,7 @@
                         <Font name="Arial" size="14.0" />
                      </font>
                   </Button>
-                  <Button layoutX="349.0" layoutY="204.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Exit Lobby">
+                  <Button layoutX="349.0" layoutY="204.0" mnemonicParsing="false" onAction="#handleLeaveGame" prefHeight="30.0" prefWidth="100.0" text="Exit Lobby">
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>

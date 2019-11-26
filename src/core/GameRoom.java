@@ -16,6 +16,7 @@ public class GameRoom {
 	int maxPlayers = 1;
 	int id = 0;
 	Game serverGame;
+	public String chat ="";
 
 	public GameRoom(User creator, String name, int max) {
 		this.creator = creator;
@@ -32,8 +33,24 @@ public class GameRoom {
 	}
 
 	public void join(User player) {
-		users.put(player.getUsername(), player);
-		serverGame.addPlayer(player.getUsername());
+		if (users.containsKey(player.getUsername())) {
+
+		} else {
+			users.put(player.getUsername(), player);
+			serverGame.addPlayer(player.getUsername());
+		}
+	}
+	
+	public void leave(String username) {
+		User u = users.get(username);
+		
+		if(u != null) {
+			users.remove(username);
+			serverGame.removePlayer(username);
+		}else {
+			System.out.println(username+ " User doesn't exist");
+		}
+
 	}
 
 	public void setGameId(int id) {
@@ -74,7 +91,7 @@ public class GameRoom {
 
 	public void setId(int id) {
 		this.id = id;
-		
+
 	}
 
 	public void sendMsg(String username, String txt) {
@@ -95,5 +112,10 @@ public class GameRoom {
 				serverApp.sendMsg(m);
 		}
 
+	}
+
+	public void update(GameState m) {
+		serverGame.setPlayers(m.getPlayers());
+		serverGame.setTurn(m.getTurn());
 	}
 }

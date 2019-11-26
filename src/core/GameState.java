@@ -9,12 +9,15 @@ import java.util.List;
 
 import game.Player;
 import game.Tile;
+import ui.Game;
 
 public class GameState extends Message{
 
 	List<Player> players;
+	byte gameId;
+	byte turn = 0;
 	
-	private GameState() {
+	GameState() {
 		super(Type.GAMESTATE);
 		players = new ArrayList<Player>();
 	}
@@ -22,11 +25,14 @@ public class GameState extends Message{
 	public GameState(GameRoom room) {
 		super(Type.GAMESTATE);
 		players = room.serverGame.getPlayers();
+		turn = (byte) room.serverGame.getTurn();
+		gameId = (byte)room.id;
 	}
 
 	@Override
 	public void write(ByteArrayOutputStream os) throws IOException {
 		byte numPlayers = (byte)players.size();
+		os.write(gameId);
 		os.write(numPlayers);
 		for(Player p: players){
 			byte[] username = Util.strByteArray(p.getName(), USERNAME_SIZE);
@@ -43,11 +49,15 @@ public class GameState extends Message{
 			}
 		}
 		
+		os.write(turn);
+		
 	}
 	
 	public static GameState read(ByteArrayInputStream is) throws IOException{
+		byte gameId = (byte) is.read();
 		byte numPlayers = (byte)is.read();
 		GameState msg = new GameState();
+		msg.gameId = gameId;
 		for(int i=0; i<numPlayers;i++) {
 			byte[] username = new byte[USERNAME_SIZE];
 			is.read(username);
@@ -58,7 +68,7 @@ public class GameState extends Message{
 			byte numProperties = (byte) is.read();
 			int[] owned = new int[numProperties];
 			for(int j=0;j<numProperties;j++) {
-				owned[i] = is.read();
+				owned[j] = is.read();
 			}
 			Player p = new Player(Util.toString(username));
 			p.setPosition(pos);
@@ -66,6 +76,8 @@ public class GameState extends Message{
 			p.setProperties(owned);
 			msg.players.add(p);
 		}
+		
+		msg.turn = (byte)is.read();
 		
 		return msg;
 		
@@ -76,5 +88,29 @@ public class GameState extends Message{
 		return players;
 	}
 
+	public int getGameId() {
+		return gameId;
+	}
+	
+//	public String toString() {
+//		String output  = "Turn " + turn;
+//		for(Player p: players) {
+//			output += p.getId() +"-" + p.getName() + " : " + p.getMoney() + "| " + p.properties.size() + "\n";
+//		}
+//		return output;
+//		
+//	}
+
+	public static GameState fromGame(Game game) {
+		GameState state = new GameState();
+		state.players = game.getPlayers();
+		state.gameId = (byte) game.getId();
+		state.turn = (byte)game.getTurn();
+		return state;
+	}
+
+	public int getTurn() {
+		return turn;
+	}
 }
 

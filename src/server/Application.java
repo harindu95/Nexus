@@ -2,6 +2,8 @@ package server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import core.ChatMessage;
 import core.CreateGame_Request;
@@ -9,6 +11,7 @@ import core.GameRoom;
 import core.GameState;
 import core.JoinGame_Reply;
 import core.JoinGame_Request;
+import core.LeaveGame;
 import core.Login_Reply;
 import core.Login_Request;
 import core.Logout_Reply;
@@ -34,7 +37,7 @@ public class Application {
 		users = UserDatabase.getInstance();
 		this.con = con;
 		games = GameList.getInstance();
-		games.createGame(users.getUser("test"), "test Game", 32);
+
 	}
 
 	public void handle(Message msg) {
@@ -43,11 +46,12 @@ public class Application {
 			User u = users.validate(req.getUserName(), req.getPassword());
 			System.out.println("Validating User");
 			if (u == null) {
-				//TODO : invalid login
+				// TODO : invalid login
 			} else {
 				users.registerOnline(u, this);
 				Login_Reply reply = new Login_Reply(u);
 				con.send(reply);
+				games.createGame(u, "test Game", 32);
 			}
 		} else if (msg instanceof OnlineUsers_Request) {
 			List<User> online = users.getOnlineUsers();
@@ -64,7 +68,7 @@ public class Application {
 				con.send(reply);
 				GameState state = new GameState(game);
 				game.sendMsg(state);
-				
+
 			}
 		} else if (msg instanceof ViewGames_Request) {
 			ViewGames_Request req = (ViewGames_Request) msg;
@@ -91,12 +95,8 @@ public class Application {
 			}
 		} else if (msg instanceof ChatMessage) {
 			ChatMessage chatMsg = (ChatMessage) msg;
-			GameRoom g = games.getGameRoom(chatMsg.getId());
-			if (g == null) {
-				// TODO: handle error
-			} else {
-				g.sendMsg(chatMsg.getUsername(), chatMsg.getMessage());
-			}
+			parseMessage(chatMsg);
+
 		} else if (msg instanceof Logout_Request) {
 			Logout_Request req = (Logout_Request) msg;
 			User u = users.getUser(req.getUsername());
@@ -111,18 +111,61 @@ public class Application {
 			Reconnect_Request req = (Reconnect_Request) msg;
 			User u = users.validate(req.getUsername(), req.getPassword());
 			System.out.println("Validating User");
-			if( u == null) {
-				//TODO: INVALID user
-			}else {
+			if (u == null) {
+				// TODO: INVALID user
+			} else {
 				Application app = u.getConnection();
 				con.app = app;
 				Reconnect_Reply reply = new Reconnect_Reply(u.getUsername());
 				con.send(reply);
 			}
-		}else if(msg instanceof RollDice) {
+		} else if (msg instanceof RollDice) {
 			RollDice m = (RollDice) msg;
 			games.getGameRoom(m.getGameId()).sendMsg(m);
+		} else if (msg instanceof GameState) {
+			GameState m = (GameState) msg;
+			System.out.println(m.toString());
+			GameRoom room = games.getGameRoom(m.getGameId());
+			room.update(m);
+			room.sendMsg(new GameState(room));
+
+		} else if (msg instanceof LeaveGame) {
+			LeaveGame req = (LeaveGame) msg;
+			GameRoom room = games.getGameRoom(req.getGameId());
+			room.leave(req.getUsername());
+			room.sendMsg(new GameState(room));
+			String txt = String.format("%s left the game", req.getUsername());
+			room.sendMsg(req.getUsername(), txt);
+
 		}
+	}
+
+	private void parseMessage(ChatMessage chatMsg) {
+		String text = chatMsg.getMessage();
+		String regex = "@(\\w+)";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(text);
+		boolean publicMsg = true;
+		while (matcher.find()) {
+			publicMsg = false;
+			String username = matcher.group(1);
+			User u = users.getUser(username);
+			System.out.println("Reciever name : " + username);
+			if (u != null)
+				u.getConnection().sendMsg(chatMsg);
+			User sender = users.getUser(chatMsg.getUsername());
+			sender.getConnection().sendMsg(chatMsg);
+		}
+
+		if (publicMsg) {
+			GameRoom g = games.getGameRoom(chatMsg.getId());
+			if (g == null) {
+				// TODO: handle error
+			} else {
+				g.sendMsg(chatMsg.getUsername(), chatMsg.getMessage());
+			}
+		}
+
 	}
 
 	public void sendMsg(String msg, int gameId, String username) {
@@ -133,7 +176,7 @@ public class Application {
 
 	public void sendMsg(Message m) {
 		con.send(m);
-		
+
 	}
 
 }
