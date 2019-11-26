@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -24,6 +25,7 @@ import core.Reconnect_Reply;
 import core.RollDice;
 import core.Util;
 import core.ViewGames_Reply;
+import javafx.scene.control.ButtonType;
 
 public class Connection implements Runnable {
 
@@ -68,6 +70,7 @@ public class Connection implements Runnable {
 					recvBytes += read;
 					if (read != size) {
 						// BUG
+						Util.showDialog("Message size:Size mismatch");		
 						System.err.println("BUG: Size mismatch");
 					} else {
 						Message msg = null;
@@ -99,14 +102,14 @@ public class Connection implements Runnable {
 					}
 
 				} catch (SocketTimeoutException e) {
-
+						
 				} catch (IOException e) {
-
+					Util.showDialog(e.getMessage());		
 					e.printStackTrace();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+										
+					Util.showDialog(e.getMessage());
+				} 
 			}
 		}
 

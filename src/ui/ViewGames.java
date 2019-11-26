@@ -6,6 +6,7 @@ import java.util.List;
 
 import client.Application;
 import core.GameRoom;
+import core.Util;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,33 +21,33 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class ViewGames extends Base {
-	
+
 	public ViewGames(Application app) {
 		super(app);
 	}
 
 	List<GameRoom> games;
-	
+
 	public void initialize() {
 		gamesTable.setPlaceholder(new Label("No current games available."));
 		name_col.setCellValueFactory(new PropertyValueFactory<GameRoom, String>("name"));
 		id_col.setCellValueFactory(new PropertyValueFactory<GameRoom, Integer>("id"));
 		max_col.setCellValueFactory(new PropertyValueFactory<GameRoom, Integer>("maxPlayers"));
 	}
-	
+
 	public void start(Stage window) {
 		super.start(window, "fxml/listGames.fxml");
 	}
 
 	@FXML
 	TableView<GameRoom> gamesTable;
-	
+
 	@FXML
 	TableColumn<GameRoom, String> name_col;
-	
+
 	@FXML
 	TableColumn<GameRoom, Integer> id_col;
-	
+
 	@FXML
 	TableColumn<GameRoom, Integer> max_col;
 
@@ -60,18 +61,25 @@ public class ViewGames extends Base {
 //		GameRoom test = new core.GameRoom("game_name__@@@", 12);
 //		gamesTable.getItems().add(test);
 	}
-	
 
 	@FXML
 	public void handleJoinBtn(ActionEvent e) {
 		GameRoom selected = gamesTable.getSelectionModel().getSelectedItem();
-		app.joinGame(selected.getId());
+		if (selected == null) {
+			Util.showDialog("Select a game room!");
+		} else {
+			app.joinGame(selected.getId());
+		}
 	}
 
-	
 	@FXML
 	public void handleObserveBtn(ActionEvent e) {
 		GameRoom selected = gamesTable.getSelectionModel().getSelectedItem();
-		app.observeGame(selected.getId());
+		
+		if (selected == null) {
+			Util.showDialog("Select a game room!");
+		} else {
+			app.observeGame(selected.getId());
+		}
 	}
 }

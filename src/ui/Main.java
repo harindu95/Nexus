@@ -3,6 +3,7 @@ package ui;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
+import core.Util;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,8 +20,12 @@ public class Main extends Application {
 	Stage stage;
 
 	
-	public void init(Stage stage) throws UnknownHostException, IOException {
-		app = new client.Application();
+	public void init(Stage stage) {
+		try {
+			app = new client.Application();
+		} catch (IOException e) {
+			Util.showDialog(e.getMessage());		
+		}
 		this.stage = stage;
 		app.setLogin(this);
 	}

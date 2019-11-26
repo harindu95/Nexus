@@ -1,6 +1,11 @@
 package core;
 
 import java.nio.ByteBuffer;
+import java.util.Optional;
+
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 public class Util {
 	static void strncpy(byte[] dest, String source) {
@@ -59,5 +64,20 @@ public class Util {
 			System.out.print(b);
 		}
 		System.out.println();
+	}
+	
+	static int error_counter = 0;
+	public static  void showDialog(String error) {
+		error_counter++;
+		if(error_counter > 5)
+			return;
+		Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				Optional<ButtonType> b = new Alert(Alert.AlertType.ERROR, error).showAndWait();
+			}
+		});
+		
 	}
 }
