@@ -37,7 +37,7 @@ public class Util {
 	 }
 
 	public static short toShort(byte[] header) {
-		System.out.println("header -- " + header[0] + header[1]);
+		
 		ByteBuffer buf = ByteBuffer.allocate(2);
 		buf.put(header[0]);
 		buf.put(header[1]);

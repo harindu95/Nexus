@@ -18,6 +18,7 @@ import core.LeaveGame;
 import core.Login_Request;
 import core.Logout_Request;
 import core.Message;
+import core.ObserveGame_Request;
 import core.OnlineUsers_Request;
 import core.Reconnect_Request;
 import core.RollDice;
@@ -102,6 +103,8 @@ public class Connection extends Thread {
 							msg = GameState.read(buf);
 						}else if(type == Message.Type.LEAVEGAME) {
 							msg = LeaveGame.read(buf);
+						}else if(type == Message.Type.OBSERVEGAME_REQUEST) {
+							msg = ObserveGame_Request.read(buf);
 						}
 						app.handle(msg);
 					}

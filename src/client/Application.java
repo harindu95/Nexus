@@ -18,6 +18,8 @@ import core.Login_Request;
 import core.Logout_Reply;
 import core.Logout_Request;
 import core.Message;
+import core.ObserveGame_Reply;
+import core.ObserveGame_Request;
 import core.OnlineUsers_Reply;
 import core.OnlineUsers_Request;
 import core.Reconnect_Reply;
@@ -87,7 +89,16 @@ public class Application {
 			updateGame(dice);
 		} else if (msg instanceof GameState) {
 			updateGame(msg);
+		}else if(msg instanceof ObserveGame_Reply) {
+			ObserveGame_Reply reply = (ObserveGame_Reply) msg;
+			updateGameLobby(reply);
 		}
+	}
+
+	private void updateGameLobby(ObserveGame_Reply reply) {
+		currentGame = reply.getGame();
+		lobby.update(currentGame);
+		
 	}
 
 	private void updateGame(Message msg) {
@@ -347,5 +358,11 @@ public class Application {
 		con.send(msg);
 		currentGame = null;
 		showMainMenu();
+	}
+
+	public void observeGame(int id) {
+		ObserveGame_Request req = new ObserveGame_Request(u.getUsername(), id);
+		con.send(req);
+		showGameLobby();
 	}
 }

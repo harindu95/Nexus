@@ -18,6 +18,7 @@ import core.JoinGame_Reply;
 import core.Login_Reply;
 import core.Logout_Reply;
 import core.Message;
+import core.ObserveGame_Reply;
 import core.OnlineUsers_Reply;
 import core.Reconnect_Reply;
 import core.RollDice;
@@ -90,6 +91,8 @@ public class Connection implements Runnable {
 						}else if(type == Message.Type.GAMESTATE) {
 							msg = GameState.read(buf);
 							
+						}else if(type == Message.Type.OBSERVEGAME_REPLY) {
+							msg = ObserveGame_Reply.read(buf);
 						}
 
 						app.handle(msg);

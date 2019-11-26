@@ -68,4 +68,10 @@ public class ViewGames extends Base {
 		app.joinGame(selected.getId());
 	}
 
+	
+	@FXML
+	public void handleObserveBtn(ActionEvent e) {
+		GameRoom selected = gamesTable.getSelectionModel().getSelectedItem();
+		app.observeGame(selected.getId());
+	}
 }

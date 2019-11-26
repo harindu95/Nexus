@@ -12,6 +12,7 @@ public class GameRoom {
 	String name;
 
 	Map<String, User> users = new HashMap<>();
+	Map<String, User> observers = new HashMap<>();
 	User creator;
 	int maxPlayers = 1;
 	int id = 0;
@@ -95,12 +96,8 @@ public class GameRoom {
 	}
 
 	public void sendMsg(String username, String txt) {
-		List<User> players = getUsers();
-		for (User u : players) {
-			Application serverApp = u.getConnection();
-			if (serverApp != null)
-				serverApp.sendMsg(txt, id, username);
-		}
+		ChatMessage chatMsg = new ChatMessage(txt, id, username);
+		sendMsg(chatMsg);
 
 	}
 
@@ -111,11 +108,23 @@ public class GameRoom {
 			if (serverApp != null)
 				serverApp.sendMsg(m);
 		}
+		
+		List<User> obs = new ArrayList<>(observers.values());
+		for (User u : obs) {
+			Application serverApp = u.getConnection();
+			if (serverApp != null)
+				serverApp.sendMsg(m);
+		}
 
 	}
 
 	public void update(GameState m) {
 		serverGame.setPlayers(m.getPlayers());
 		serverGame.setTurn(m.getTurn());
+	}
+
+	public void observe(User player) {
+		observers.put(player.getUsername(), player);
+		
 	}
 }

@@ -17,6 +17,8 @@ import core.Login_Request;
 import core.Logout_Reply;
 import core.Logout_Request;
 import core.Message;
+import core.ObserveGame_Reply;
+import core.ObserveGame_Request;
 import core.OnlineUsers_Reply;
 import core.OnlineUsers_Request;
 import core.Reconnect_Reply;
@@ -93,7 +95,25 @@ public class Application {
 				g.sendMsg(state);
 
 			}
-		} else if (msg instanceof ChatMessage) {
+		}else if(msg instanceof ObserveGame_Request) { 
+			ObserveGame_Request req = (ObserveGame_Request)msg;
+			User player = users.getUser(req.getUsername());
+			if (player == null) {
+				// TODO: Error
+				System.out.println("Invalid username");
+			} else {
+				int gameId = req.getGameId();
+				GameRoom g = games.observe(player, gameId);
+				// TODO: Check max players
+				ObserveGame_Reply reply = new ObserveGame_Reply(g);
+				con.send(reply);
+				String txt = String.format("%s is observing the game", player.getUsername());
+				g.sendMsg(player.getUsername(), txt);
+				GameState state = new GameState(g);
+				g.sendMsg(state);
+
+			}
+		}else if (msg instanceof ChatMessage) {
 			ChatMessage chatMsg = (ChatMessage) msg;
 			parseMessage(chatMsg);
 
