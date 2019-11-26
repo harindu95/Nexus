@@ -24,7 +24,6 @@ import core.OnlineUsers_Reply;
 import core.OnlineUsers_Request;
 import core.Reconnect_Reply;
 import core.Reconnect_Request;
-import core.RollDice;
 import core.User;
 import core.ViewGames_Reply;
 import core.ViewGames_Request;
@@ -84,9 +83,6 @@ public class Application {
 		} else if (msg instanceof Reconnect_Reply) {
 			Reconnect_Reply reply = (Reconnect_Reply) msg;
 			reconnected();
-		} else if (msg instanceof RollDice) {
-			RollDice dice = (RollDice) msg;
-			updateGame(dice);
 		} else if (msg instanceof GameState) {
 			updateGame(msg);
 		}else if(msg instanceof ObserveGame_Reply) {
@@ -102,10 +98,7 @@ public class Application {
 	}
 
 	private void updateGame(Message msg) {
-		if (msg instanceof RollDice) {
-			RollDice dice = (RollDice) msg;
-			game.updateRoll(dice.getUsername(), dice.getDice());
-		} else if (msg instanceof GameState) {
+		if (msg instanceof GameState) {
 			GameState state = (GameState) msg;
 //			System.out.println(state.toString());
 			if (game == null || game.getId() != state.getGameId()) {
@@ -340,11 +333,7 @@ public class Application {
 		game.start(mainStage);
 
 	}
-
-	public void rollDice(int gameId, int r) {
-		RollDice msg = new RollDice(u.getUsername(), gameId, r);
-		con.send(msg);
-	}
+	
 
 	public void gameChanged() {
 		GameState msg = GameState.fromGame(game);

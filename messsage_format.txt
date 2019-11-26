@@ -1,0 +1,133 @@
+ChatMessage
+	size - 2 bytes
+	type - 1 byte
+	gameId - 1 byte
+	username - 16 bytes
+	message	- 200 bytes
+
+CreateGame_Request
+	size - 2 bytes
+	type - 1 byte
+	username - 16 bytes
+	gamename - 30 bytes
+
+GameState
+	size - 2 bytes
+	type - 1 byte
+	gameId - 1 byte
+	numPlayers - 1 byte
+	for each player:
+		username - 16 bytes
+		pos - 1 byte
+		money - 8 bytes
+		numProperties - 1 byte
+		for each property:
+			index - 1 byte
+
+JoinGame_Reply
+	size - 2 bytes
+	type - 1 byte
+	status - 1 byte
+	gameName - 30 bytes
+	gameId - 1 byte
+	max - 1 byte
+	numPlayers - 1 byte
+	for each player:
+		username - 16 byte
+	
+
+JoinGame_Request
+	size - 2 byte
+	type - 1 byte
+	gameId - 1 byte
+	username - 16 byte
+
+LeaveGame
+	size - 2 byte
+	type - 1 byte
+	gameId - 1 byte
+	username - 16 bytes
+
+
+Login_Reply
+	size - 2 bytes
+	type - 1 byte
+	status - 1 byte
+	username - 16 bytes
+	password - 25 bytes
+	total - 1 byte
+	wins - 1 byte
+
+Login_Request
+	size - 2 bytes
+	type - 1 byte
+	username - 16 bytes
+	password - 25 bytes
+
+Logout_Reply
+	size - 2 bytes
+	type - 1 byte
+	username - 16 byte
+
+Logout_Request
+	size - 2 bytes
+	type - 1 byte
+	username - 16 bytes
+
+ObserveGame_Reply
+	size - 2 bytes
+	type - 1 byte
+	gameName - 30 bytes
+	gameId - 1 byte
+	max - 1 byte
+	numPlayers - 1 byte
+	for each player:
+		username - 16 bytes
+
+
+ObserveGame_Request
+	size - 2 bytes
+	type - 1 byte
+	gameId - 1 byte
+	username - 16 bytes
+
+
+OnlineUsers_Reply
+	size - 2 bytes
+	type - 1 byte
+	numUsers - 1 byte
+	for each user:
+		username - 16 bytes
+
+OnlineUsers_Request
+	size - 2 bytes
+	type - 1 byte
+
+Reconnect_Reply
+	size - 2 bytes
+	type - 1 type
+	username - 16 bytes
+
+Reconnect_Request
+	size - 2 bytes
+	type - 1 byte
+	username - 16 bytes
+	password - 25 bytes
+
+
+ViewGames_Reply
+	size - 2 byte
+	type - 1 byte
+	status - 1 byte
+	numGames - 1 byte
+	for each game:
+		id - 1 byte
+		max - 1 byte
+		gameName - 30 bytes
+
+ViewGames_Request
+	size - 2 bytes
+	type - 1 byte
+	
+	
+		

@@ -8,8 +8,6 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
-import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -22,10 +20,8 @@ import core.Message;
 import core.ObserveGame_Reply;
 import core.OnlineUsers_Reply;
 import core.Reconnect_Reply;
-import core.RollDice;
 import core.Util;
 import core.ViewGames_Reply;
-import javafx.scene.control.ButtonType;
 
 public class Connection implements Runnable {
 
@@ -89,8 +85,6 @@ public class Connection implements Runnable {
 							msg = Logout_Reply.read(buf);
 						} else if (type == Message.Type.RECONNECT_REPLY) {
 							msg = Reconnect_Reply.read(buf);
-						}else if(type == Message.Type.ROLLDICE) {
-							msg = RollDice.read(buf);
 						}else if(type == Message.Type.GAMESTATE) {
 							msg = GameState.read(buf);
 							
