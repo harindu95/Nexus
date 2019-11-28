@@ -28,7 +28,7 @@ public class OnlineUsers_Reply extends Message{
 		os.write(numUsers);
 		for(int i=0;i<numUsers;i++) {
 			User u = online.get(i);
-			os.write(Util.strByteArray(u.getUsername(),16));
+			os.write(Util.strByteArray(u.getUsername(),USERNAME_SIZE));
 		}
 	
 	}

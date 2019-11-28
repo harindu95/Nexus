@@ -12,10 +12,12 @@ public class GameRoom {
 	String name;
 
 	Map<String, User> users = new HashMap<>();
+	Map<String, User> observers = new HashMap<>();
 	User creator;
 	int maxPlayers = 1;
 	int id = 0;
 	Game serverGame;
+	public String chat ="";
 
 	public GameRoom(User creator, String name, int max) {
 		this.creator = creator;
@@ -32,8 +34,24 @@ public class GameRoom {
 	}
 
 	public void join(User player) {
-		users.put(player.getUsername(), player);
-		serverGame.addPlayer(player.getUsername());
+		if (users.containsKey(player.getUsername())) {
+
+		} else {
+			users.put(player.getUsername(), player);
+			serverGame.addPlayer(player.getUsername());
+		}
+	}
+	
+	public void leave(String username) {
+		User u = users.get(username);
+		
+		if(u != null) {
+			users.remove(username);
+			serverGame.removePlayer(username);
+		}else {
+			System.out.println(username+ " User doesn't exist");
+		}
+
 	}
 
 	public void setGameId(int id) {
@@ -74,16 +92,12 @@ public class GameRoom {
 
 	public void setId(int id) {
 		this.id = id;
-		
+
 	}
 
 	public void sendMsg(String username, String txt) {
-		List<User> players = getUsers();
-		for (User u : players) {
-			Application serverApp = u.getConnection();
-			if (serverApp != null)
-				serverApp.sendMsg(txt, id, username);
-		}
+		ChatMessage chatMsg = new ChatMessage(txt, id, username);
+		sendMsg(chatMsg);
 
 	}
 
@@ -94,6 +108,23 @@ public class GameRoom {
 			if (serverApp != null)
 				serverApp.sendMsg(m);
 		}
+		
+		List<User> obs = new ArrayList<>(observers.values());
+		for (User u : obs) {
+			Application serverApp = u.getConnection();
+			if (serverApp != null)
+				serverApp.sendMsg(m);
+		}
 
+	}
+
+	public void update(GameState m) {
+		serverGame.setPlayers(m.getPlayers());
+		serverGame.setTurn(m.getTurn());
+	}
+
+	public void observe(User player) {
+		observers.put(player.getUsername(), player);
+		
 	}
 }

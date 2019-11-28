@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -23,19 +24,17 @@ public class Player {
 		Color.LIGHTCYAN,
 		Color.YELLOWGREEN
 	};
-	
-	List<Tile> owned;
-	
+		
 	Board board;
 	
 	public Player(String username) {
-		owned = new ArrayList<Tile>();
+		properties = new ArrayList<>();
 		this.username = username;
 	}
 	
 	public Player(String username, Board map) {
 		board = map;
-		owned = new ArrayList<Tile>();
+		properties = new ArrayList<>();
 		this.username = username;
 	}
 	
@@ -50,18 +49,6 @@ public class Player {
 		position = (position + dice) % board.getSize();
 	}
 
-	private void land() {
-		Tile t = board.getTile(position);
-		if(t.owner == null) {
-			
-		}else {
-			if(t.owner != this) {
-				t.payRent(this);
-			}
-		}
-		
-	}
-	
 	public void withdraw(double price) {
 		
 		if(price < money) {
@@ -83,8 +70,8 @@ public class Player {
 		Tile tile = board.getTile(position);
 		if(tile.getPrice() < money) {
 			money -= tile.getPrice();
+			properties.add(board.getIndex(tile));
 			addTile(tile);
-			
 		}else {
 //			TODO: Not enough money
 		}
@@ -93,19 +80,17 @@ public class Player {
 	
 	public void addTile(Tile tile) {
 		tile.owner = this;
-		owned.add(tile);
+	
 	}
 	
 	
 	public String getProperties() {
 		String format = "Title Deeds: \n";
-		for(Tile t: owned) {
-			format += "  # " + t.getTitle() + "\n";
+		for(Integer i: properties) {
+			format += "  # " + board.getTile(i).getTitle() + "\n";
 		}
-		
-		
-		return format;
 				
+		return format;				
 	}
 
 	public String getName() {
@@ -132,13 +117,11 @@ public class Player {
 	}
 
 	public int[] getOwnedProperties() {
-		int[] tiles = new int[owned.size()];
-		int i =0;
-		for(Tile t:owned) {
-			tiles[i] = board.getIndex(t);
-			i++;
+		int[] array = new int[properties.size()];
+		for(int i=0;i<properties.size();i++) {
+			array[i] = properties.get(i);
 		}
-		return tiles;
+		return array;
 	}
 
 	public void setPosition(byte pos) {
@@ -150,9 +133,12 @@ public class Player {
 		
 	}
 
-	int[] properties;
+	public List<Integer> properties;
 	public void setProperties(int[] o) {
-		properties = o;
+		properties = new ArrayList<>();
+		for(int i: o) {
+			properties.add(i);
+		}
 		
 	}
 
@@ -161,7 +147,7 @@ public class Player {
 		for(int i: properties) {
 			addTile(board.getTile(i));
 		}
-		
+	
 	}
 
 	public int getId() {

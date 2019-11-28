@@ -12,16 +12,18 @@ import core.GameRoom;
 import core.GameState;
 import core.JoinGame_Reply;
 import core.JoinGame_Request;
+import core.LeaveGame;
 import core.Login_Reply;
 import core.Login_Request;
 import core.Logout_Reply;
 import core.Logout_Request;
 import core.Message;
+import core.ObserveGame_Reply;
+import core.ObserveGame_Request;
 import core.OnlineUsers_Reply;
 import core.OnlineUsers_Request;
 import core.Reconnect_Reply;
 import core.Reconnect_Request;
-import core.RollDice;
 import core.User;
 import core.ViewGames_Reply;
 import core.ViewGames_Request;
@@ -49,15 +51,13 @@ public class Application {
 	int retries = 0;
 	Timer networkTimer;
 	Game game;
-	
-	
-	
+
 	public Application() throws UnknownHostException, IOException {
 		con = new Connection(this);
 		Thread t = new Thread(con);
 		t.start();
 		networkStatus = new NetworkStatus(this);
-			
+
 	}
 
 	public void handle(Message msg) {
@@ -80,38 +80,44 @@ public class Application {
 		} else if (msg instanceof Logout_Reply) {
 			Logout_Reply reply = (Logout_Reply) msg;
 			handleLogout(reply);
-		} else if(msg instanceof Reconnect_Reply) {
+		} else if (msg instanceof Reconnect_Reply) {
 			Reconnect_Reply reply = (Reconnect_Reply) msg;
 			reconnected();
-		} else if(msg instanceof RollDice) {
-			RollDice dice = (RollDice) msg;
-			updateGame(dice);
-		} else if(msg instanceof GameState) {
+		} else if (msg instanceof GameState) {
 			updateGame(msg);
+		}else if(msg instanceof ObserveGame_Reply) {
+			ObserveGame_Reply reply = (ObserveGame_Reply) msg;
+			updateGameLobby(reply);
 		}
+	}
+
+	private void updateGameLobby(ObserveGame_Reply reply) {
+		currentGame = reply.getGame();
+		lobby.update(currentGame);
+		
 	}
 
 	private void updateGame(Message msg) {
-		if(msg instanceof RollDice) {
-			RollDice dice = (RollDice) msg;
-			game.updateRoll(dice.getUsername(), dice.getDice());
-		}else if(msg instanceof GameState) {
+		if (msg instanceof GameState) {
 			GameState state = (GameState) msg;
-			if(game == null) {
-				game = new Game(this, currentGame.getId(), u.getUsername());
+//			System.out.println(state.toString());
+			if (game == null || game.getId() != state.getGameId()) {
+				game = new Game(this, state.getGameId(), u.getUsername());
 			}
+			game.setTurn(state.getTurn());
 			game.update(state.getPlayers());
+			lobby.updateUsers(state.getPlayers());
 		}
-		
+
 	}
 
 	private void reconnected() {
-		
+
 		retries = 0;
 	}
 
 	private void handleLogout(Logout_Reply reply) {
-		
+
 		if (reply.getUsername().equals(u.getUsername())) {
 			Platform.runLater(new Runnable() {
 
@@ -135,8 +141,16 @@ public class Application {
 	}
 
 	private void updateChat(ChatMessage chatMsg) {
-		if (chatMsg.getId() == currentGame.getId()) {
-			lobby.addMsg(chatMsg);
+		if(currentGame == null) {
+			
+		}
+		else if (chatMsg.getId() == currentGame.getId()) {
+			String msg = String.format("%s: %s\n", chatMsg.getUsername(), chatMsg.getMessage());
+			System.out.println(msg);
+			currentGame.chat += msg;
+			lobby.setChat(currentGame.chat);
+			if (game != null)
+				game.setChat(currentGame.chat);
 		}
 
 	}
@@ -200,22 +214,20 @@ public class Application {
 				userMenu.start(window);
 			}
 		});
-		
+
 		networkTimer = new Timer();
 		TimerTask timerTask = new TimerTask() {
-			
-			
+
 			@Override
 			public void run() {
 				int sent = con.getSentBytes();
 				int recv = con.getRecvBytes();
 				networkStatus.update(sent, recv);
-				
+
 			}
 		};
-		
+
 		networkTimer.scheduleAtFixedRate(timerTask, 0l, 1000l);
-		
 
 	}
 
@@ -294,35 +306,52 @@ public class Application {
 	public void reconnect() throws IOException, InterruptedException {
 		retries++;
 		Thread.sleep(300);
-		if(retries > 30) {
+		if (retries > 30) {
 			throw new IOException("Disconnected from server. Failed to restablish connection");
 		}
 		try {
 			con.reset();
 			Reconnect_Request req = new Reconnect_Request(u.getUsername(), u.getPassword());
 			con.send(req);
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public void showNetworkStatus() {
-		
+
 		networkStatus.start(mainStage);
-		
+
 	}
 
 	public void showGame() {
 //		game = new Game(this, currentGame.getId(), u.getUsername());
+		game.setChat(lobby.getChat());
 		game.start(mainStage);
-		
+
+	}
+	
+
+	public void gameChanged() {
+		GameState msg = GameState.fromGame(game);
+		con.send(msg);
+
+	}
+	
+	
+	public void leaveGame() {
+		LeaveGame msg = new LeaveGame(u.getUsername(), currentGame.getId());
+		con.send(msg);
+		currentGame = null;
+		showMainMenu();
 	}
 
-	public void rollDice(int gameId, int r) {
-		RollDice msg = new RollDice(u.getUsername(), gameId, r);
-		con.send(msg);		
+	public void observeGame(int id) {
+		ObserveGame_Request req = new ObserveGame_Request(u.getUsername(), id);
+		con.send(req);
+		showGameLobby();
 	}
 }

@@ -44,9 +44,9 @@ public class ListPlayers extends Base {
 	@FXML
 	public void handleMouseClick(MouseEvent e) {
 
-		System.out.println("Mouse Clicked");
-
-		onlinelist.getItems().add("username1");
+//		System.out.println("Mouse Clicked");
+//
+//		onlinelist.getItems().add("username1");
 	}
 
 	

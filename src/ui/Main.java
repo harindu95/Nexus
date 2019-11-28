@@ -3,6 +3,7 @@ package ui;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
+import core.Util;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,10 +20,17 @@ public class Main extends Application {
 	Stage stage;
 
 	
-	public void init(Stage stage) throws UnknownHostException, IOException {
-		app = new client.Application();
-		this.stage = stage;
-		app.setLogin(this);
+	public void init(Stage stage) {
+		try {
+			app = new client.Application();
+			this.stage = stage;
+			app.setLogin(this);
+		} catch (IOException e) {
+			Util.showDialog(e.getMessage());
+			
+			
+		}
+		
 	}
 	
 	@Override
@@ -80,7 +88,7 @@ public class Main extends Application {
 //	• Create a game room
 //	• List online users in the system
 //• Join or leave a game room
-//	TODO leave game room
+//	leave game room
 //	• chat in the game room
 //	Public
 //	• Interactive game playing (real-time update of game status to all players)

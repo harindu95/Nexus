@@ -45,6 +45,13 @@ public class GameList {
 		}
 		return null;
 	}
+
+	public GameRoom observe(User player, int gameId) {
+		GameRoom g = games.get(gameId);
+		g.observe(player);
+		
+		return g;
+	}
 	
 	
 }
