@@ -3,6 +3,7 @@ package server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -18,11 +19,13 @@ public class Server {
 	
 	ExecutorService pool;
 	ServerSocket serverSocket;
+	static int portNum = 3001;
 	
 	public static void main(String[] args) {
 		Server s = null;
 		try {
-			s =  new Server();
+			portNum = Integer.parseInt(args[0]);
+			s =  new Server(portNum);
 			while(true) {
 				s.listen();
 			}
@@ -39,10 +42,26 @@ public class Server {
 		}
 	}
 
+	public Server(int port) throws UnknownHostException, IOException {
+		// Initialize a server socket
+		pool = Executors.newCachedThreadPool();
+		serverSocket = new ServerSocket(portNum);
+		InetAddress localhost = InetAddress.getLocalHost(); 
+	    System.out.println("Host IP Address : " + 
+	                      (localhost.getHostAddress()).trim()); 
+	    System.out.println("Host port number : " + portNum); 
+		System.out.println("Waiting for a client ");
+		
+
+	}
+	
 	public Server() throws UnknownHostException, IOException {
 		// Initialize a server socket
 		pool = Executors.newCachedThreadPool();
-		serverSocket = new ServerSocket(3000);
+		serverSocket = new ServerSocket(3001);
+		InetAddress localhost = InetAddress.getLocalHost(); 
+	    System.out.println("Host IP Address : " + 
+	                      (localhost.getHostAddress()).trim()); 
 		System.out.println("Waiting for a client ");
 		
 

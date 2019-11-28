@@ -51,9 +51,9 @@ public class Application {
 	int retries = 0;
 	Timer networkTimer;
 	Game game;
-
-	public Application() throws UnknownHostException, IOException {
-		con = new Connection(this);
+	
+	public Application(String hostIP, int hostPort) throws UnknownHostException, IOException {
+		con = new Connection(this, hostIP, hostPort);
 		Thread t = new Thread(con);
 		t.start();
 		networkStatus = new NetworkStatus(this);
