@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.nio.ByteBuffer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import core.ChatMessage;
@@ -21,7 +20,6 @@ import core.Message;
 import core.ObserveGame_Request;
 import core.OnlineUsers_Request;
 import core.Reconnect_Request;
-import core.RollDice;
 import core.Util;
 import core.ViewGames_Request;
 
@@ -97,8 +95,6 @@ public class Connection extends Thread {
 							msg = Logout_Request.read(buf);
 						} else if (type == Message.Type.RECONNECT_REQUEST) {
 							msg = Reconnect_Request.read(buf);
-						} else if(type == Message.Type.ROLLDICE) {
-							msg = RollDice.read(buf);
 						}else if(type == Message.Type.GAMESTATE) {
 							msg = GameState.read(buf);
 						}else if(type == Message.Type.LEAVEGAME) {
