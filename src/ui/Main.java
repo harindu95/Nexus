@@ -18,11 +18,13 @@ public class Main extends Application {
 
 	client.Application app;
 	Stage stage;
+	static String hostIP;
+	static int hostPort;
 
 	
 	public void init(Stage stage) {
 		try {
-			app = new client.Application();
+			app = new client.Application(hostIP, hostPort);
 			this.stage = stage;
 			app.setLogin(this);
 		} catch (IOException e) {
@@ -49,6 +51,8 @@ public class Main extends Application {
 
 	
 	public static void main(String[] args) {
+		hostIP = args[0];
+		hostPort = Integer.parseInt(args[1]);
 		launch(args);
 	}
 

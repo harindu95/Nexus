@@ -31,9 +31,13 @@ public class Connection implements Runnable {
 	Application app;
 	private int sentBytes;
 	private int recvBytes;
+	String hostIP = "0.0.0.0";
+	int hostPort = 3001;
 
-	public Connection(Application app) throws UnknownHostException, IOException {
+	public Connection(Application app,String ip, int port ) throws UnknownHostException, IOException {
 		this.app = app;
+		hostIP = ip;
+		hostPort = port;
 		init();
 	}
 
@@ -138,7 +142,7 @@ public class Connection implements Runnable {
 
 	private void init() throws IOException {
 		// Initialize a client socket connection to the server
-		Socket clientSocket = new Socket("0.0.0.0", 3000);
+		Socket clientSocket = new Socket(hostIP, hostPort);
 
 		// Initialize input and an output stream for the connection(s)
 		os = clientSocket.getOutputStream();
