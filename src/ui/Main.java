@@ -18,10 +18,9 @@ public class Main extends Application {
 
 	client.Application app;
 	Stage stage;
-	static String hostIP;
-	static int hostPort;
+	static String hostIP = "0.0.0.0";
+	static int hostPort = 3001;
 
-	
 	public void init(Stage stage) {
 		try {
 			app = new client.Application(hostIP, hostPort);
@@ -29,16 +28,14 @@ public class Main extends Application {
 			app.setLogin(this);
 		} catch (IOException e) {
 			Util.showDialog(e.getMessage());
-			
-			
+
 		}
-		
+
 	}
-	
+
 	@Override
 	public void start(Stage stage) throws Exception {
 
-		
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/Login.fxml"));
 		loader.setController(this);
 		Parent root = loader.load();
@@ -49,10 +46,15 @@ public class Main extends Application {
 		stage.show();
 	}
 
-	
 	public static void main(String[] args) {
-		hostIP = args[0];
-		hostPort = Integer.parseInt(args[1]);
+		if (args.length > 1) {
+			try {
+				hostIP = args[0];
+				hostPort = Integer.parseInt(args[1]);
+			} catch (NumberFormatException e) {
+
+			}
+		}
 		launch(args);
 	}
 
@@ -66,18 +68,16 @@ public class Main extends Application {
 		String password = password_field.getText();
 		String username = username_field.getText();
 		System.out.println(password + "  " + username);
-		Stage login = (Stage)password_field.getScene().getWindow();
-		
+		Stage login = (Stage) password_field.getScene().getWindow();
+
 		app.login(username, password);
 
 	}
 
-
 	public void close() {
 		stage.close();
-		
-	}
 
+	}
 
 	public void show() throws UnknownHostException, IOException {
 		init(stage);
@@ -106,5 +106,5 @@ public class Main extends Application {
 //	• interface to graphically display the game status
 //	• interface to play the game
 //TODO close client socket
-	
+
 }

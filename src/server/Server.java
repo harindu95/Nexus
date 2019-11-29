@@ -24,8 +24,13 @@ public class Server {
 	public static void main(String[] args) {
 		Server s = null;
 		try {
+			if(args.length > 0)
 			portNum = Integer.parseInt(args[0]);
-			s =  new Server(portNum);
+		}catch(NumberFormatException e) {
+			
+		}
+		try {
+		s =  new Server(portNum);
 			while(true) {
 				s.listen();
 			}
@@ -43,6 +48,7 @@ public class Server {
 	}
 
 	public Server(int port) throws UnknownHostException, IOException {
+		
 		// Initialize a server socket
 		pool = Executors.newCachedThreadPool();
 		serverSocket = new ServerSocket(portNum);
