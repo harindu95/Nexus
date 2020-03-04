@@ -1,6 +1,8 @@
 # Nexus
 CPSC 441 - 2D game
 
+![Screenshot from 2020-03-04 00-02-17](https://user-images.githubusercontent.com/15548633/75853525-89264980-5dab-11ea-9977-0e5c9c78dec7.png)
+
 ## Requirements
 * Java 11 - openjdk-11
 * OpenJFX
